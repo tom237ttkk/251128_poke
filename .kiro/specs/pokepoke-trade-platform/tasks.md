@@ -1,122 +1,55 @@
-# Implementation Plan
+# Implementation Plan (2 ストリーム並列用)
 
-- [ ] 1. プロジェクト構造とツールのセットアップ
+## Stream A: Backend (API / Hono)
 
-  - モノレポ構造でフロントエンド（Angular）とバックエンド（Hono）を作成
-  - Bun をパッケージマネージャーとして設定
-  - Biome を formatter/linter として設定
-  - 基本的なディレクトリ構造を作成
+- [ ] A1. バックエンド基盤セットアップ（元 Step2）
+  - Hono 初期化、Prisma セットアップ、環境変数雛形
   - _Requirements: 全体_
-
-- [ ] 2. バックエンド基盤の構築
-
-  - Hono アプリケーションの初期化
-  - Prisma のセットアップとデータベース接続
-  - 環境変数の設定
+- [ ] A2. Prisma スキーマ実装（元 Step2.1）
+  - User, CardCollection, TradeOffer, TradeOfferCard, Message 定義とリレーション
+  - マイグレーション実行
   - _Requirements: 全体_
-
-- [ ] 2.1 Prisma スキーマの実装
-
-  - User, CardCollection, TradeOffer, TradeOfferCard, Message モデルを定義
-  - インデックスとリレーションを設定
-  - マイグレーションを実行
-  - _Requirements: 全体_
-
-- [ ]\* 2.2 Property 6 のプロパティベーステスト
-
-  - **Property 6: カードコレクションへの追加**
-  - **Validates: Requirements 2.1, 2.2**
-
-- [ ] 2.3 認証ミドルウェアの実装
-
-  - JWT 生成と検証機能
-  - authMiddleware（認証チェック）
-  - adminMiddleware（管理者権限チェック）
-  - blacklistMiddleware（ブラックリストチェック）
+- [ ] A3. 認証ミドルウェア（元 Step2.3）
+  - JWT 生成/検証、auth/admin/blacklist middleware
   - _Requirements: 1.1, 5.2, 7.4_
-
-- [ ]\* 2.4 Property 1, 2, 5, 20 のプロパティベーステスト
-
-  - **Property 1: ユーザー登録の成功**
-  - **Property 2: 重複登録の防止**
-  - **Property 5: ブラックリストユーザーの登録拒否**
-  - **Property 20: ブラックリストユーザーのログイン拒否**
-  - **Validates: Requirements 1.1, 1.2, 1.5, 5.2**
-
-- [ ] 3. 認証機能の実装
-
-  - AuthService の実装（ユーザー登録、ログイン）
-  - 認証エンドポイントの実装（POST /api/auth/register, POST /api/auth/login, GET /api/auth/me）
-  - ポケポケユーザー ID のバリデーション
+- [ ] A4. 認証機能（元 Step3, 3.1）
+  - AuthService と /api/auth/register, /login, /me
+  - ポケポケ ID バリデーション
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
+- [ ] A5. ユーザー/カード/トレード API（元 Step4, 5, 6）
+  - UserService, CardCollectionService, TradeOfferService
+  - CRUD・ステータス管理・コレクション選択ロジック
+  - _Requirements: 2.x, 3.x, 4.5, 6.1_
+- [ ] A6. 検索・ブラックリスト・チャット API（元 Step7, 8）
+  - 検索ロジック、ブラックリスト反映、チャットメッセージ保存/取得
+  - _Requirements: 4.x, 7.x_
+- [ ] A7. プロパティベーステスト（元 Step2.2, 2.4, 3.1*, 4.1*, 5.1*, 6.1*, 7.1*）
+  - Property 1,2,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,20 を該当 API 実装とセットで追加
+  - fast-check で 100 回以上
 
-- [ ]\* 3.1 Property 4 のプロパティベーステスト
+## Stream B: Frontend (Web / Angular + Vite)
 
-  - **Property 4: 無効な ID の拒否**
-  - **Validates: Requirements 1.4**
-
-- [ ] 4. ユーザー機能の実装
-
-  - UserService の実装
-  - ユーザーエンドポイントの実装（GET /api/users/:userId, GET /api/users/:userId/trade-offers）
-  - _Requirements: 4.5, 6.1_
-
-- [ ]\* 4.1 Property 18 のプロパティベーステスト
-
-  - **Property 18: ユーザープロフィールのトレード提案表示**
-  - **Validates: Requirements 4.5**
-
-- [ ] 5. カードコレクション機能の実装
-
-  - CardCollectionService の実装
-  - カードコレクションエンドポイントの実装（GET /api/users/me/cards, POST /api/users/me/cards/wanted, POST /api/users/me/cards/offered, DELETE /api/users/me/cards/:cardId, PUT /api/users/me/cards/:cardId）
-  - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
-
-- [ ]\* 5.1 Property 7, 8, 9 のプロパティベーステスト
-
-  - **Property 7: カードコレクションからの削除**
-  - **Property 8: カードコレクションの完全表示**
-  - **Property 9: カード数量の更新**
-  - **Validates: Requirements 2.3, 2.4, 2.5**
-
-- [ ] 6. トレード提案機能の実装
-
-  - TradeOfferService の実装
-  - トレード提案エンドポイントの実装（GET /api/trade-offers, GET /api/trade-offers/:offerId, POST /api/trade-offers, DELETE /api/trade-offers/:offerId）
-  - トレード提案のステータス管理（active/closed への更新、検索結果からのクローズ提案除外）
-  - カードコレクションからの選択ロジック
-  - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
-
-- [ ]\* 6.1 Property 10, 11, 12, 13 のプロパティベーステスト
-
-  - **Property 10: トレード提案の作成と保存**
-  - **Property 11: カードコレクションからの選択**
-  - **Property 12: トレード提案の削除**
-  - **Property 13: トレード提案の完全表示**
-  - **Validates: Requirements 3.1, 3.2, 3.3, 3.4, 3.5**
-
-- [ ] 7. トレード提案検索機能の実装
-
-  - 検索ロジックの実装（カード名による検索）
-  - ブラックリストユーザーのフィルタリング
-  - ページネーション機能（検索対象は active のトレード提案）
-  - _Requirements: 4.1, 4.2, 4.3, 4.4_
-
-- [ ]\* 7.1 Property 14, 15, 16, 17 のプロパティベーステスト
-
-  - **Property 14: カード検索の正確性**
-  - **Property 15: ブラックリストユーザーの除外**
-  - **Property 16: トレード提案詳細の完全表示**
-  - **Property 17: 検索結果の作成者情報**
-  - **Validates: Requirements 4.1, 4.2, 4.3, 4.4**
-
-- [ ] 8. チャット機能の実装
-
-  - MessageService の実装
-  - チャットエンドポイントの実装（GET /api/trade-offers/:offerId/messages, POST /api/trade-offers/:offerId/messages）
-  - メッセージの時系列表示
-  - アクセス制御（作成者または参加者のみ）
-  - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5_
+- [ ] B1. フロント基盤
+  - ルーティング（app.routes）、レイアウト骨組み、デザイン基準（Tailwind/スタイル変数）
+  - API base URL 設定
+- [ ] B2. 認証フロー UI
+  - ログイン/登録フォーム、状態管理、エラーハンドリング
+  - バックエンド A4 の契約に従う
+- [ ] B3. プロフィール/コレクション UI
+  - 欲しい/出せるカード表示・追加・削除・数量更新
+  - _Requirements: 2.x, 6.x_
+- [ ] B4. トレード提案 UI
+  - 作成/一覧/詳細/削除、ステータス表示
+  - _Requirements: 3.x, 4.5_
+- [ ] B5. 検索 UI
+  - カード名検索、ページネーション、ブラックリスト除外表示
+  - _Requirements: 4.1–4.4_
+- [ ] B6. チャット UI
+  - 提案単位のチャット画面、時系列表示、送信フォーム
+  - _Requirements: 7.x_
+- [ ] B7. テスト
+  - Vitest 単体テスト + Playwright E2E（ログイン→検索→提案閲覧のゴールデンパス）
+  - API スタブ/モックでバックエンド未完時も進行可能
 
 - [ ]\* 8.1 Property 26, 27, 28, 29 のプロパティベーステスト
 
