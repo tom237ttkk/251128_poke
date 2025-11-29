@@ -26,7 +26,7 @@
 2. WHEN ユーザーが既に登録済みのポケポケユーザー ID で登録を試みる、THE System SHALL 登録を拒否し適切なメッセージを表示する
 3. WHEN ユーザーが登録を完了する、THE System SHALL ユーザーをプロフィールページにリダイレクトする
 4. WHEN ユーザーが無効な形式のポケポケユーザー ID を提供する、THE System SHALL 登録を拒否しバリデーションエラーを表示する
-5. WHEN ユーザーが bun されたのポケポケユーザー ID を提供する、THE System SHALL 登録を拒否し、エラーを表示する
+5. WHEN ユーザーが BAN されたポケポケユーザー ID を提供する、THE System SHALL 登録を拒否し、エラーを表示する
 
 ### 要件 2
 

@@ -83,6 +83,7 @@
 
   - TradeOfferService の実装
   - トレード提案エンドポイントの実装（GET /api/trade-offers, GET /api/trade-offers/:offerId, POST /api/trade-offers, DELETE /api/trade-offers/:offerId）
+  - トレード提案のステータス管理（active/closed への更新、検索結果からのクローズ提案除外）
   - カードコレクションからの選択ロジック
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
 
@@ -98,7 +99,7 @@
 
   - 検索ロジックの実装（カード名による検索）
   - ブラックリストユーザーのフィルタリング
-  - ページネーション機能
+  - ページネーション機能（検索対象は active のトレード提案）
   - _Requirements: 4.1, 4.2, 4.3, 4.4_
 
 - [ ]\* 7.1 Property 14, 15, 16, 17 のプロパティベーステスト
@@ -216,7 +217,7 @@
   - TradeOffersComponent の実装
   - SearchBarComponent の実装
   - TradeOfferCardComponent の実装
-  - ページネーション機能
+  - ページネーション機能（検索結果は active のトレード提案のみ）
   - _Requirements: 4.1, 4.2, 4.4_
 
 - [ ] 19. トレード提案詳細・チャットページの実装

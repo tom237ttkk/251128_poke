@@ -93,7 +93,10 @@ RESTful API を採用し、以下のエンドポイントを提供：
 - GET /api/trade-offers - トレード提案検索
 - GET /api/trade-offers/:offerId - トレード提案詳細取得
 - POST /api/trade-offers - トレード提案作成
+- PATCH /api/trade-offers/:offerId/status - トレード提案のステータス変更（`active`/`closed`）
 - DELETE /api/trade-offers/:offerId - トレード提案削除
+
+検索エンドポイントは `status=active` のトレード提案のみを返し、作成ユーザーのプロフィールでは `active`/`closed` の両方を表示する。
 
 **チャット:**
 
@@ -195,17 +198,24 @@ model CardCollection {
   @@index([userId])
 }
 
+enum TradeOfferStatus {
+  ACTIVE
+  CLOSED
+}
+
 model TradeOffer {
-  id        String   @id @default(uuid())
+  id        String            @id @default(uuid())
   userId    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  status    TradeOfferStatus  @default(ACTIVE)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
 
   user  User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   cards TradeOfferCard[]
   messages Message[]
 
   @@index([userId])
+  @@index([status])
 }
 
 model TradeOfferCard {
@@ -261,6 +271,7 @@ interface CardCollection {
 interface TradeOffer {
   id: string;
   userId: string;
+  status: "active" | "closed";
   createdAt: Date;
   updatedAt: Date;
   cards?: TradeOfferCard[];
@@ -410,7 +421,7 @@ _For any_ ユーザー、自分のプロフィールを表示すると、全て�
 
 ### Property 25: プロフィールのトレード提案表示
 
-_For any_ ユーザー、自分のプロフィールを表示すると、全てのアクティブなトレード提案が表示される
+_For any_ ユーザー、自分のプロフィールを表示すると、全てのアクティブおよびクローズ済みのトレード提案が表示される
 **Validates: Requirements 6.5**
 
 ### Property 26: メッセージの保存と関連付け
