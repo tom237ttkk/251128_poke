@@ -18,10 +18,10 @@ MVP として、コア機能に焦点を当て、シンプルで拡張可能な�
 
 **フロントエンド:**
 
-- Angular with TypeScript
-- Angular Router for navigation
+- Next.js with TypeScript
+- Next.js App Router for navigation
 - Tailwind CSS for styling
-- Vite for build tool
+- Vite (built-in with Next.js)
 - Bun as package manager
 - Vitest for unit tests
 - Playwright for E2E tests
@@ -49,7 +49,7 @@ MVP として、コア機能に焦点を当て、シンプルで拡張可能な�
 
 ```
 ┌─────────────────┐
-│   Angular SPA   │
+│   Next.js SPA   │
 │   (Frontend)    │
 └────────┬────────┘
          │ HTTPS/REST
@@ -111,7 +111,7 @@ RESTful API を採用し、以下のエンドポイントを提供：
 
 ## Components and Interfaces
 
-### Frontend Components (Angular)
+### Frontend Components (Next.js)
 
 **Pages:**
 
@@ -518,7 +518,7 @@ interface ErrorResponse {
 - Service 層の各メソッド
 - バリデーション関数
 - ユーティリティ関数
-- Angular コンポーネントのロジック
+- Next.js コンポーネントのロジック
 
 **重要なテストケース:**
 

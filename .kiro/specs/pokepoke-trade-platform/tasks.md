@@ -23,11 +23,11 @@
 - [ ] A6. 検索・ブラックリスト・チャット API（元 Step7, 8）
   - 検索ロジック、ブラックリスト反映、チャットメッセージ保存/取得
   - _Requirements: 4.x, 7.x_
-- [ ] A7. プロパティベーステスト（元 Step2.2, 2.4, 3.1*, 4.1*, 5.1*, 6.1*, 7.1*）
+- [ ] A7. プロパティベーステスト（元 Step2.2, 2.4, 3.1*, 4.1*, 5.1*, 6.1*, 7.1\*）
   - Property 1,2,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,20 を該当 API 実装とセットで追加
   - fast-check で 100 回以上
 
-## Stream B: Frontend (Web / Angular + Vite)
+## Stream B: Frontend (Web / Next.js)
 
 - [ ] B1. フロント基盤
   - ルーティング（app.routes）、レイアウト骨組み、デザイン基準（Tailwind/スタイル変数）
@@ -48,7 +48,8 @@
   - 提案単位のチャット画面、時系列表示、送信フォーム
   - _Requirements: 7.x_
 - [ ] B7. テスト
-  - Vitest 単体テスト + Playwright E2E（ログイン→検索→提案閲覧のゴールデンパス）
+
+  - Vitest 単体テスト + Playwright E2E（ログイン → 検索 → 提案閲覧のゴールデンパス）
   - API スタブ/モックでバックエンド未完時も進行可能
 
 - [ ]\* 8.1 Property 26, 27, 28, 29 のプロパティベーステスト
@@ -89,9 +90,9 @@
 
 - [ ] 12. フロントエンド基盤の構築
 
-  - Angular プロジェクトの初期化（Vite を使用）
+  - Next.js プロジェクトの初期化
   - Tailwind CSS のセットアップ
-  - Angular Router の設定
+  - Next.js App Router の設定
   - 環境変数の設定
   - _Requirements: 全体_
 

@@ -75,7 +75,7 @@
 
 ## インポート順序
 
-1. 外部ライブラリ (Angular, Hono, Prisma など)
+1. 外部ライブラリ (Next.js, Hono, Prisma など)
 2. 内部モジュール (services, types など)
 3. 相対パス (同じディレクトリ内のファイル)
 

@@ -20,7 +20,7 @@
 ```
 
 - バックエンド（apps/api）: Hono + Prisma を想定した API。routes、services、middleware、types ディレクトリを中心に構成します。
-- フロントエンド（apps/web）: Angular + Vite ベースの Web アプリ。pages、components、services で UI とデータ取得を分離します。
+- フロントエンド（apps/web）: Next.js ベースの Web アプリ。pages、components、services で UI とデータ取得を分離します。
 
 ## 主要ドキュメント
 

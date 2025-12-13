@@ -2,8 +2,8 @@
 
 ## フロントエンド
 
-- **フレームワーク:** Angular with TypeScript
-- **ルーティング:** Angular Router
+- **フレームワーク:** Next.js with TypeScript
+- **ルーティング:** Next.js App Router
 - **スタイリング:** Tailwind CSS
 - **ビルドツール:** Vite
 - **パッケージマネージャー:** Bun
