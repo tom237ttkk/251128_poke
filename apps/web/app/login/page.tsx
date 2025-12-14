@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/lib/contexts/auth.context";
+import { useState } from "react";
 import { ErrorMessage } from "@/components/error-message";
+import { useAuth } from "@/lib/contexts/auth.context";
 
 export default function LoginPage() {
   const [pokepokeUserId, setPokepokeUserId] = useState("");
@@ -45,33 +45,37 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+    <div className="page flex items-center justify-center py-16 px-4 sm:px-6">
+      <div className="card w-full max-w-md p-8">
+        <div className="text-center">
+          <h2 className="text-2xl font-semibold tracking-tight text-gray-900">
             {isRegistering ? "新規登録" : "ログイン"}
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
+          <p className="mt-2 text-sm text-gray-600">
             ポケポケトレードプラットフォームへようこそ
           </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="pokepoke-user-id" className="sr-only">
-                ポケポケユーザーID
-              </label>
-              <input
-                id="pokepoke-user-id"
-                name="pokepokeUserId"
-                type="text"
-                required
-                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="ポケポケユーザーID"
-                value={pokepokeUserId}
-                onChange={(e) => setPokepokeUserId(e.target.value)}
-              />
-            </div>
+          <div>
+            <label
+              htmlFor="pokepoke-user-id"
+              className="block text-sm font-medium text-gray-700"
+            >
+              ポケポケユーザーID
+            </label>
+            <input
+              id="pokepoke-user-id"
+              name="pokepokeUserId"
+              type="text"
+              required
+              className="input mt-2"
+              placeholder="ポケポケユーザーID"
+              value={pokepokeUserId}
+              onChange={(e) => setPokepokeUserId(e.target.value)}
+            />
+            <p className="mt-2 text-xs text-gray-500">
+              4-20文字の英数字で入力してください
+            </p>
           </div>
 
           {error && (
@@ -84,7 +88,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn btn-primary w-full"
             >
               {isLoading ? "処理中..." : isRegistering ? "登録" : "ログイン"}
             </button>
@@ -97,7 +101,7 @@ export default function LoginPage() {
                 setIsRegistering(!isRegistering);
                 setError("");
               }}
-              className="text-sm text-blue-600 hover:text-blue-500"
+              className="text-sm font-medium text-blue-600 hover:text-blue-700"
             >
               {isRegistering
                 ? "既にアカウントをお持ちの方はこちら"

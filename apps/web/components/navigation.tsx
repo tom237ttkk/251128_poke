@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useAuth } from "@/lib/contexts/auth.context";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/contexts/auth.context";
 
 export function Navigation() {
   const { user, isAuthenticated, logout } = useAuth();
@@ -14,52 +14,49 @@ export function Navigation() {
   };
 
   return (
-    <nav className="bg-white shadow-sm border-b">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex space-x-8">
+    <nav className="sticky top-0 z-50 border-b border-black/5 bg-white/70 backdrop-blur">
+      <div className="page-container">
+        <div className="flex h-16 items-center justify-between">
+          <div className="flex items-center gap-6">
             <Link
               href="/"
-              className="flex items-center text-xl font-bold text-gray-900"
+              className="flex items-center text-lg font-semibold tracking-tight text-gray-900"
             >
               ポケポケトレード
             </Link>
             {isAuthenticated && (
-              <>
+              <div className="hidden items-center gap-4 sm:flex">
                 <Link
                   href="/trade-offers"
-                  className="flex items-center text-gray-700 hover:text-gray-900"
+                  className="text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
                 >
                   トレード提案検索
                 </Link>
                 <Link
                   href="/profile"
-                  className="flex items-center text-gray-700 hover:text-gray-900"
+                  className="text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
                 >
                   プロフィール
                 </Link>
-              </>
+              </div>
             )}
           </div>
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center gap-3">
             {isAuthenticated ? (
               <>
-                <span className="text-sm text-gray-700">
+                <span className="hidden rounded-full border border-black/5 bg-white/60 px-3 py-1 text-sm text-gray-700 sm:inline-flex">
                   {user?.pokepokeUserId}
                 </span>
                 <button
                   onClick={handleLogout}
-                  className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700"
+                  className="btn btn-danger"
                   type="button"
                 >
                   ログアウト
                 </button>
               </>
             ) : (
-              <Link
-                href="/login"
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
-              >
+              <Link href="/login" className="btn btn-primary">
                 ログイン
               </Link>
             )}

@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { ErrorMessage } from "@/components/error-message";
+import { Loading } from "@/components/loading";
+import { Navigation } from "@/components/navigation";
 import { useAuth } from "@/lib/contexts/auth.context";
 import { CardCollectionService } from "@/lib/services/card-collection.service";
 import { TradeOfferService } from "@/lib/services/trade-offer.service";
-import { Navigation } from "@/components/navigation";
-import { Loading } from "@/components/loading";
-import { ErrorMessage } from "@/components/error-message";
 import type { CardCollection } from "@/lib/types";
 
 export default function CreateTradeOfferPage() {
@@ -15,10 +15,10 @@ export default function CreateTradeOfferPage() {
   const router = useRouter();
   const [cards, setCards] = useState<CardCollection[]>([]);
   const [selectedWanted, setSelectedWanted] = useState<Map<string, number>>(
-    new Map()
+    new Map(),
   );
   const [selectedOffered, setSelectedOffered] = useState<Map<string, number>>(
-    new Map()
+    new Map(),
   );
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -39,7 +39,7 @@ export default function CreateTradeOfferPage() {
         setError(
           err instanceof Error
             ? err.message
-            : "カードコレクションの読み込みに失敗しました"
+            : "カードコレクションの読み込みに失敗しました",
         );
       } finally {
         setIsLoading(false);
@@ -54,7 +54,7 @@ export default function CreateTradeOfferPage() {
   const wantedCards = cards.filter((c) => c.cardType === "wanted");
   const offeredCards = cards.filter((c) => c.cardType === "offered");
 
-  const handleToggleWanted = (cardId: string, cardName: string) => {
+  const handleToggleWanted = (cardId: string) => {
     const newSelected = new Map(selectedWanted);
     if (newSelected.has(cardId)) {
       newSelected.delete(cardId);
@@ -65,7 +65,7 @@ export default function CreateTradeOfferPage() {
     setSelectedWanted(newSelected);
   };
 
-  const handleToggleOffered = (cardId: string, cardName: string) => {
+  const handleToggleOffered = (cardId: string) => {
     const newSelected = new Map(selectedOffered);
     if (newSelected.has(cardId)) {
       newSelected.delete(cardId);
@@ -79,7 +79,7 @@ export default function CreateTradeOfferPage() {
   const handleQuantityChange = (
     cardId: string,
     quantity: number,
-    type: "wanted" | "offered"
+    type: "wanted" | "offered",
   ) => {
     if (type === "wanted") {
       const newSelected = new Map(selectedWanted);
@@ -108,14 +108,14 @@ export default function CreateTradeOfferPage() {
         ([cardId, quantity]) => {
           const card = cards.find((c) => c.id === cardId);
           return { cardName: card?.cardName || "", quantity };
-        }
+        },
       );
 
       const offeredCardsData = Array.from(selectedOffered.entries()).map(
         ([cardId, quantity]) => {
           const card = cards.find((c) => c.id === cardId);
           return { cardName: card?.cardName || "", quantity };
-        }
+        },
       );
 
       await TradeOfferService.createTradeOffer({
@@ -126,7 +126,7 @@ export default function CreateTradeOfferPage() {
       router.push("/profile");
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "トレード提案の作成に失敗しました"
+        err instanceof Error ? err.message : "トレード提案の作成に失敗しました",
       );
     } finally {
       setIsSubmitting(false);
@@ -142,11 +142,11 @@ export default function CreateTradeOfferPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="page">
       <Navigation />
-      <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+      <main className="page-container py-10">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-semibold tracking-tight text-gray-900">
             トレード提案を作成
           </h1>
           <p className="mt-2 text-sm text-gray-600">
@@ -162,7 +162,7 @@ export default function CreateTradeOfferPage() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white shadow rounded-lg p-6">
+            <div className="card card-body">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">
                 欲しいカード
               </h2>
@@ -175,14 +175,12 @@ export default function CreateTradeOfferPage() {
                   {wantedCards.map((card) => (
                     <label
                       key={card.id}
-                      className="flex items-center p-3 bg-gray-50 rounded-md cursor-pointer hover:bg-gray-100"
+                      className="flex items-center rounded-lg border border-black/5 bg-white/50 p-3 cursor-pointer hover:bg-white/70 transition-colors"
                     >
                       <input
                         type="checkbox"
                         checked={selectedWanted.has(card.id)}
-                        onChange={() =>
-                          handleToggleWanted(card.id, card.cardName)
-                        }
+                        onChange={() => handleToggleWanted(card.id)}
                         className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                       />
                       <span className="ml-3 flex-1 text-gray-900">
@@ -198,10 +196,10 @@ export default function CreateTradeOfferPage() {
                             handleQuantityChange(
                               card.id,
                               Number.parseInt(e.target.value, 10),
-                              "wanted"
+                              "wanted",
                             )
                           }
-                          className="w-16 px-2 py-1 text-sm border border-gray-300 rounded-md"
+                          className="input w-20 py-1 text-sm"
                           onClick={(e) => e.stopPropagation()}
                         />
                       )}
@@ -211,7 +209,7 @@ export default function CreateTradeOfferPage() {
               )}
             </div>
 
-            <div className="bg-white shadow rounded-lg p-6">
+            <div className="card card-body">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">
                 出せるカード
               </h2>
@@ -224,14 +222,12 @@ export default function CreateTradeOfferPage() {
                   {offeredCards.map((card) => (
                     <label
                       key={card.id}
-                      className="flex items-center p-3 bg-gray-50 rounded-md cursor-pointer hover:bg-gray-100"
+                      className="flex items-center rounded-lg border border-black/5 bg-white/50 p-3 cursor-pointer hover:bg-white/70 transition-colors"
                     >
                       <input
                         type="checkbox"
                         checked={selectedOffered.has(card.id)}
-                        onChange={() =>
-                          handleToggleOffered(card.id, card.cardName)
-                        }
+                        onChange={() => handleToggleOffered(card.id)}
                         className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                       />
                       <span className="ml-3 flex-1 text-gray-900">
@@ -247,10 +243,10 @@ export default function CreateTradeOfferPage() {
                             handleQuantityChange(
                               card.id,
                               Number.parseInt(e.target.value, 10),
-                              "offered"
+                              "offered",
                             )
                           }
-                          className="w-16 px-2 py-1 text-sm border border-gray-300 rounded-md"
+                          className="input w-20 py-1 text-sm"
                           onClick={(e) => e.stopPropagation()}
                         />
                       )}
@@ -265,7 +261,7 @@ export default function CreateTradeOfferPage() {
             <button
               type="button"
               onClick={() => router.back()}
-              className="px-6 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+              className="btn btn-secondary"
             >
               キャンセル
             </button>
@@ -275,7 +271,7 @@ export default function CreateTradeOfferPage() {
                 isSubmitting ||
                 (selectedWanted.size === 0 && selectedOffered.size === 0)
               }
-              className="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn btn-primary"
             >
               {isSubmitting ? "作成中..." : "作成"}
             </button>

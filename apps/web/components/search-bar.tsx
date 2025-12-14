@@ -25,7 +25,7 @@ export function SearchBar({
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full px-4 py-2 pl-10 pr-4 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="input pl-10 pr-4"
           placeholder={placeholder}
         />
         <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -34,7 +34,9 @@ export function SearchBar({
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
+            aria-hidden="true"
           >
+            <title>検索</title>
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -43,11 +45,8 @@ export function SearchBar({
             />
           </svg>
         </div>
-        <button
-          type="submit"
-          className="absolute inset-y-0 right-0 flex items-center pr-3"
-        >
-          <span className="sr-only">検索</span>
+        <button type="submit" className="sr-only">
+          検索
         </button>
       </div>
     </form>
