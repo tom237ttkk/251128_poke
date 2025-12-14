@@ -1,14 +1,10 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution": "Bundler",
+    "moduleResolution": "bundler",
     "strict": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    "types": ["bun-types"],
-    "outDir": "dist"
-  },
-  "include": ["src/**/*.ts"]
+    "types": ["bun", "node"]
+  }
 }

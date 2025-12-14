@@ -2,25 +2,25 @@
 
 ## Stream A: Backend (API / Hono)
 
-- [ ] A1. バックエンド基盤セットアップ（元 Step2）
+- [x] A1. バックエンド基盤セットアップ（元 Step2）
   - Hono 初期化、Prisma セットアップ、環境変数雛形
   - _Requirements: 全体_
-- [ ] A2. Prisma スキーマ実装（元 Step2.1）
+- [x] A2. Prisma スキーマ実装（元 Step2.1）
   - User, CardCollection, TradeOffer, TradeOfferCard, Message 定義とリレーション
   - マイグレーション実行
   - _Requirements: 全体_
-- [ ] A3. 認証ミドルウェア（元 Step2.3）
+- [x] A3. 認証ミドルウェア（元 Step2.3）
   - JWT 生成/検証、auth/admin/blacklist middleware
   - _Requirements: 1.1, 5.2, 7.4_
-- [ ] A4. 認証機能（元 Step3, 3.1）
+- [x] A4. 認証機能（元 Step3, 3.1）
   - AuthService と /api/auth/register, /login, /me
   - ポケポケ ID バリデーション
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
-- [ ] A5. ユーザー/カード/トレード API（元 Step4, 5, 6）
+- [x] A5. ユーザー/カード/トレード API（元 Step4, 5, 6）
   - UserService, CardCollectionService, TradeOfferService
   - CRUD・ステータス管理・コレクション選択ロジック
   - _Requirements: 2.x, 3.x, 4.5, 6.1_
-- [ ] A6. 検索・ブラックリスト・チャット API（元 Step7, 8）
+- [x] A6. 検索・ブラックリスト・チャット API（元 Step7, 8）
   - 検索ロジック、ブラックリスト反映、チャットメッセージ保存/取得
   - _Requirements: 4.x, 7.x_
 - [ ] A7. プロパティベーステスト（元 Step2.2, 2.4, 3.1*, 4.1*, 5.1*, 6.1*, 7.1\*）
