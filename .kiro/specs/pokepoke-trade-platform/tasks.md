@@ -16,7 +16,7 @@
   - AuthService と /api/auth/register, /login, /me
   - ポケポケ ID バリデーション
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
-- [ ] A5. ユーザー/カード/トレード API（元 Step4, 5, 6）
+- [x] A5. ユーザー/カード/トレード API（元 Step4, 5, 6）
   - UserService, CardCollectionService, TradeOfferService
   - CRUD・ステータス管理・コレクション選択ロジック
   - _Requirements: 2.x, 3.x, 4.5, 6.1_

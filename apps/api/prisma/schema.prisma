@@ -26,8 +26,7 @@ model User {
 
 model CardCollection {
   id        String   @id @default(uuid())
-  userId    String   @unique
-  cards     String   // JSON string storing card data (cardId, quantity) array for simplicity, or could be a relation if we had a Card master table. 
+  userId    String   @unique 
                    // Given the requirements, likely we store simplified data or relations.
                    // "CardCollectionService... コレクション選択ロジック" implies complexity. 
                    // However, usually detailed cards are stored as separate relations or JSON. 
