@@ -13,18 +13,12 @@ import { ErrorMessage } from "@/components/error-message";
 import type { CardCollection, TradeOffer } from "@/lib/types";
 
 export default function ProfilePage() {
-  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
   const [cards, setCards] = useState<CardCollection[]>([]);
   const [tradeOffers, setTradeOffers] = useState<TradeOffer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
-
-  useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      router.push("/login");
-    }
-  }, [isAuthenticated, authLoading, router]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -101,11 +95,11 @@ export default function ProfilePage() {
     }
   };
 
-  if (authLoading || isLoading) {
+  if (isLoading) {
     return <Loading />;
   }
 
-  if (!isAuthenticated || !user) {
+  if (!user) {
     return null;
   }
 
