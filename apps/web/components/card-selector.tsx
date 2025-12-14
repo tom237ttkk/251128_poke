@@ -31,7 +31,7 @@ export function CardSelector({ type, onAdd }: CardSelectorProps) {
   };
 
   return (
-    <div className="bg-white shadow rounded-lg p-6">
+    <div className="card card-body">
       <h3 className="text-lg font-medium text-gray-900 mb-4">{title}</h3>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -46,7 +46,7 @@ export function CardSelector({ type, onAdd }: CardSelectorProps) {
             id={`card-name-${type}`}
             value={cardName}
             onChange={(e) => setCardName(e.target.value)}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            className="input mt-2"
             placeholder="カード名を入力"
             required
           />
@@ -64,14 +64,14 @@ export function CardSelector({ type, onAdd }: CardSelectorProps) {
             min="1"
             value={quantity}
             onChange={(e) => setQuantity(Number.parseInt(e.target.value, 10))}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            className="input mt-2"
             required
           />
         </div>
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="btn btn-primary w-full"
         >
           {isLoading ? "追加中..." : "追加"}
         </button>

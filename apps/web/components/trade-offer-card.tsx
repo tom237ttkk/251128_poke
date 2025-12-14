@@ -1,5 +1,5 @@
-import type { TradeOffer } from "@/lib/types";
 import Link from "next/link";
+import type { TradeOffer } from "@/lib/types";
 
 interface TradeOfferCardProps {
   tradeOffer: TradeOffer;
@@ -13,7 +13,7 @@ export function TradeOfferCard({ tradeOffer }: TradeOfferCardProps) {
 
   return (
     <Link href={`/trade-offers/${tradeOffer.id}`}>
-      <div className="bg-white shadow rounded-lg p-6 hover:shadow-md transition-shadow cursor-pointer">
+      <div className="card card-body hover:shadow-md hover:bg-white/80 transition-all cursor-pointer">
         <div className="flex items-center justify-between mb-4">
           <div>
             <p className="text-sm text-gray-500">
@@ -24,10 +24,8 @@ export function TradeOfferCard({ tradeOffer }: TradeOfferCardProps) {
             </p>
           </div>
           <span
-            className={`px-3 py-1 text-xs font-medium rounded-full ${
-              tradeOffer.status === "active"
-                ? "bg-green-100 text-green-800"
-                : "bg-gray-100 text-gray-800"
+            className={`badge ${
+              tradeOffer.status === "active" ? "badge-active" : "badge-closed"
             }`}
           >
             {tradeOffer.status === "active" ? "アクティブ" : "クローズ"}

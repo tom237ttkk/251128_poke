@@ -1,28 +1,24 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/lib/contexts/auth.context";
 import type { Message } from "@/lib/types";
 
 interface ChatBoxProps {
-  offerId: string;
   messages: Message[];
   onSendMessage: (content: string) => Promise<void>;
 }
 
-export function ChatBox({ offerId, messages, onSendMessage }: ChatBoxProps) {
+export function ChatBox({ messages, onSendMessage }: ChatBoxProps) {
   const { user } = useAuth();
   const [newMessage, setNewMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    if (messages.length === 0) return;
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages.length]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,8 +36,8 @@ export function ChatBox({ offerId, messages, onSendMessage }: ChatBoxProps) {
   };
 
   return (
-    <div className="bg-white shadow rounded-lg overflow-hidden">
-      <div className="bg-gray-50 px-6 py-4 border-b">
+    <div className="card overflow-hidden">
+      <div className="border-b border-black/5 bg-white/50 px-6 py-4">
         <h2 className="text-lg font-semibold text-gray-900">チャット</h2>
       </div>
 
@@ -64,7 +60,7 @@ export function ChatBox({ offerId, messages, onSendMessage }: ChatBoxProps) {
                   className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
                     isOwnMessage
                       ? "bg-blue-600 text-white"
-                      : "bg-gray-200 text-gray-900"
+                      : "border border-black/5 bg-white/70 text-gray-900"
                   }`}
                 >
                   <p className="text-sm font-medium mb-1">
@@ -86,20 +82,20 @@ export function ChatBox({ offerId, messages, onSendMessage }: ChatBoxProps) {
         <div ref={messagesEndRef} />
       </div>
 
-      <form onSubmit={handleSubmit} className="border-t p-4">
+      <form onSubmit={handleSubmit} className="border-t border-black/5 p-4">
         <div className="flex space-x-2">
           <input
             type="text"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="input flex-1"
             placeholder="メッセージを入力..."
             disabled={isSending}
           />
           <button
             type="submit"
             disabled={isSending || !newMessage.trim()}
-            className="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="btn btn-primary"
           >
             {isSending ? "送信中..." : "送信"}
           </button>

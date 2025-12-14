@@ -1,15 +1,15 @@
 "use client";
 
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useRouter, useParams } from "next/navigation";
-import { useAuth } from "@/lib/contexts/auth.context";
-import { TradeOfferService } from "@/lib/services/trade-offer.service";
-import { MessageService } from "@/lib/services/message.service";
-import { Navigation } from "@/components/navigation";
 import { ChatBox } from "@/components/chat-box";
-import { Loading } from "@/components/loading";
 import { ErrorMessage } from "@/components/error-message";
-import type { TradeOffer, Message } from "@/lib/types";
+import { Loading } from "@/components/loading";
+import { Navigation } from "@/components/navigation";
+import { useAuth } from "@/lib/contexts/auth.context";
+import { MessageService } from "@/lib/services/message.service";
+import { TradeOfferService } from "@/lib/services/trade-offer.service";
+import type { Message, TradeOffer } from "@/lib/types";
 
 export default function TradeOfferDetailPage() {
   const params = useParams();
@@ -33,7 +33,7 @@ export default function TradeOfferDetailPage() {
         setMessages(messagesData.messages);
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : "データの読み込みに失敗しました"
+          err instanceof Error ? err.message : "データの読み込みに失敗しました",
         );
       } finally {
         setIsLoading(false);
@@ -49,7 +49,7 @@ export default function TradeOfferDetailPage() {
       setMessages([...messages, newMessage]);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "メッセージの送信に失敗しました"
+        err instanceof Error ? err.message : "メッセージの送信に失敗しました",
       );
     }
   };
@@ -58,12 +58,12 @@ export default function TradeOfferDetailPage() {
     try {
       const updatedOffer = await TradeOfferService.updateTradeOfferStatus(
         offerId,
-        status
+        status,
       );
       setTradeOffer(updatedOffer);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "ステータスの更新に失敗しました"
+        err instanceof Error ? err.message : "ステータスの更新に失敗しました",
       );
     }
   };
@@ -85,9 +85,9 @@ export default function TradeOfferDetailPage() {
 
   if (!tradeOffer) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="page">
         <Navigation />
-        <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <main className="page-container py-10">
           <ErrorMessage message="トレード提案が見つかりませんでした" />
         </main>
       </div>
@@ -101,12 +101,12 @@ export default function TradeOfferDetailPage() {
   const isOwner = user?.id === tradeOffer.userId;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="page">
       <Navigation />
-      <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+      <main className="page-container py-10">
         <div className="mb-8">
           <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="text-3xl font-semibold tracking-tight text-gray-900">
               トレード提案詳細
             </h1>
             {isOwner && (
@@ -114,17 +114,17 @@ export default function TradeOfferDetailPage() {
                 <button
                   onClick={() =>
                     handleStatusChange(
-                      tradeOffer.status === "active" ? "closed" : "active"
+                      tradeOffer.status === "active" ? "closed" : "active",
                     )
                   }
-                  className="px-4 py-2 text-sm font-medium text-white bg-yellow-600 rounded-md hover:bg-yellow-700"
+                  className="btn btn-warning"
                   type="button"
                 >
                   {tradeOffer.status === "active" ? "クローズする" : "再開する"}
                 </button>
                 <button
                   onClick={handleDelete}
-                  className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700"
+                  className="btn btn-danger"
                   type="button"
                 >
                   削除
@@ -137,10 +137,8 @@ export default function TradeOfferDetailPage() {
               作成者: {tradeOffer.user?.pokepokeUserId || "不明"}
             </p>
             <span
-              className={`px-3 py-1 text-xs font-medium rounded-full ${
-                tradeOffer.status === "active"
-                  ? "bg-green-100 text-green-800"
-                  : "bg-gray-100 text-gray-800"
+              className={`badge ${
+                tradeOffer.status === "active" ? "badge-active" : "badge-closed"
               }`}
             >
               {tradeOffer.status === "active" ? "アクティブ" : "クローズ"}
@@ -158,7 +156,7 @@ export default function TradeOfferDetailPage() {
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <div className="bg-white shadow rounded-lg p-6">
+          <div className="card card-body">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">
               欲しいカード
             </h2>
@@ -169,7 +167,7 @@ export default function TradeOfferDetailPage() {
                 {wantedCards.map((card) => (
                   <li
                     key={card.id}
-                    className="flex justify-between p-3 bg-gray-50 rounded-md"
+                    className="flex justify-between rounded-lg border border-black/5 bg-white/50 p-3"
                   >
                     <span className="font-medium text-gray-900">
                       {card.cardName}
@@ -181,7 +179,7 @@ export default function TradeOfferDetailPage() {
             )}
           </div>
 
-          <div className="bg-white shadow rounded-lg p-6">
+          <div className="card card-body">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">
               出せるカード
             </h2>
@@ -192,7 +190,7 @@ export default function TradeOfferDetailPage() {
                 {offeredCards.map((card) => (
                   <li
                     key={card.id}
-                    className="flex justify-between p-3 bg-gray-50 rounded-md"
+                    className="flex justify-between rounded-lg border border-black/5 bg-white/50 p-3"
                   >
                     <span className="font-medium text-gray-900">
                       {card.cardName}
@@ -206,11 +204,7 @@ export default function TradeOfferDetailPage() {
         </div>
 
         {isAuthenticated && (
-          <ChatBox
-            offerId={offerId}
-            messages={messages}
-            onSendMessage={handleSendMessage}
-          />
+          <ChatBox messages={messages} onSendMessage={handleSendMessage} />
         )}
       </main>
     </div>

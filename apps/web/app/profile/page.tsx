@@ -1,15 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { CardList } from "@/components/card-list";
+import { CardSelector } from "@/components/card-selector";
+import { ErrorMessage } from "@/components/error-message";
+import { Loading } from "@/components/loading";
+import { Navigation } from "@/components/navigation";
 import { useAuth } from "@/lib/contexts/auth.context";
 import { CardCollectionService } from "@/lib/services/card-collection.service";
 import { TradeOfferService } from "@/lib/services/trade-offer.service";
-import { Navigation } from "@/components/navigation";
-import { CardList } from "@/components/card-list";
-import { CardSelector } from "@/components/card-selector";
-import { Loading } from "@/components/loading";
-import { ErrorMessage } from "@/components/error-message";
 import type { CardCollection, TradeOffer } from "@/lib/types";
 
 export default function ProfilePage() {
@@ -40,7 +40,7 @@ export default function ProfilePage() {
         setTradeOffers(offersData);
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : "データの読み込みに失敗しました"
+          err instanceof Error ? err.message : "データの読み込みに失敗しました",
         );
       } finally {
         setIsLoading(false);
@@ -54,12 +54,12 @@ export default function ProfilePage() {
     try {
       const newCard = await CardCollectionService.addWantedCard(
         cardName,
-        quantity
+        quantity,
       );
       setCards([...cards, newCard]);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "カードの追加に失敗しました"
+        err instanceof Error ? err.message : "カードの追加に失敗しました",
       );
     }
   };
@@ -68,12 +68,12 @@ export default function ProfilePage() {
     try {
       const newCard = await CardCollectionService.addOfferedCard(
         cardName,
-        quantity
+        quantity,
       );
       setCards([...cards, newCard]);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "カードの追加に失敗しました"
+        err instanceof Error ? err.message : "カードの追加に失敗しました",
       );
     }
   };
@@ -84,7 +84,7 @@ export default function ProfilePage() {
       setCards(cards.filter((card) => card.id !== cardId));
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "カードの削除に失敗しました"
+        err instanceof Error ? err.message : "カードの削除に失敗しました",
       );
     }
   };
@@ -93,7 +93,7 @@ export default function ProfilePage() {
     try {
       const updatedCard = await CardCollectionService.updateCardQuantity(
         cardId,
-        quantity
+        quantity,
       );
       setCards(cards.map((card) => (card.id === cardId ? updatedCard : card)));
     } catch (err) {
@@ -110,11 +110,13 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="page">
       <Navigation />
-      <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+      <main className="page-container py-10">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">プロフィール</h1>
+          <h1 className="text-3xl font-semibold tracking-tight text-gray-900">
+            プロフィール
+          </h1>
           <p className="mt-2 text-sm text-gray-600">
             ポケポケユーザーID: {user.pokepokeUserId}
           </p>
@@ -148,14 +150,14 @@ export default function ProfilePage() {
           />
         </div>
 
-        <div className="bg-white shadow rounded-lg p-6">
+        <div className="card card-body">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-semibold text-gray-900">
               トレード提案
             </h2>
             <button
               onClick={() => router.push("/trade-offers/create")}
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
+              className="btn btn-primary"
               type="button"
             >
               新規作成
@@ -168,15 +170,11 @@ export default function ProfilePage() {
           ) : (
             <div className="space-y-3">
               {tradeOffers.map((offer) => (
-                <div
+                <button
                   key={offer.id}
-                  className="p-4 bg-gray-50 rounded-md cursor-pointer hover:bg-gray-100"
+                  className="rounded-lg border border-black/5 bg-white/50 p-4 cursor-pointer hover:bg-white/70 transition-colors"
                   onClick={() => router.push(`/trade-offers/${offer.id}`)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      router.push(`/trade-offers/${offer.id}`);
-                    }
-                  }}
+                  type="button"
                 >
                   <div className="flex items-center justify-between">
                     <div>
@@ -192,7 +190,7 @@ export default function ProfilePage() {
                       {new Date(offer.createdAt).toLocaleDateString("ja-JP")}
                     </div>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           )}

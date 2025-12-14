@@ -25,7 +25,7 @@ export function CardList({
       : "出せるカードがまだ登録されていません";
 
   return (
-    <div className="bg-white shadow rounded-lg p-6">
+    <div className="card card-body">
       <h2 className="text-xl font-semibold text-gray-900 mb-4">{title}</h2>
       {filteredCards.length === 0 ? (
         <p className="text-gray-500 text-sm">{emptyMessage}</p>
@@ -34,7 +34,7 @@ export function CardList({
           {filteredCards.map((card) => (
             <div
               key={card.id}
-              className="flex items-center justify-between p-3 bg-gray-50 rounded-md"
+              className="flex items-center justify-between rounded-lg border border-black/5 bg-white/50 p-3"
             >
               <div className="flex-1">
                 <p className="font-medium text-gray-900">{card.cardName}</p>
@@ -52,7 +52,7 @@ export function CardList({
                         onUpdateQuantity(card.id, newQuantity);
                       }
                     }}
-                    className="w-16 px-2 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="input w-20 py-1 text-sm"
                   />
                   <button
                     onClick={() => onDelete?.(card.id)}
