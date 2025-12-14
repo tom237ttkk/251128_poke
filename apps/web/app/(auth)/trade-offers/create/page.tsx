@@ -11,7 +11,7 @@ import { ErrorMessage } from "@/components/error-message";
 import type { CardCollection } from "@/lib/types";
 
 export default function CreateTradeOfferPage() {
-  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { isAuthenticated } = useAuth();
   const router = useRouter();
   const [cards, setCards] = useState<CardCollection[]>([]);
   const [selectedWanted, setSelectedWanted] = useState<Map<string, number>>(
@@ -23,12 +23,6 @@ export default function CreateTradeOfferPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
-
-  useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      router.push("/login");
-    }
-  }, [isAuthenticated, authLoading, router]);
 
   useEffect(() => {
     const loadCards = async () => {
@@ -133,7 +127,7 @@ export default function CreateTradeOfferPage() {
     }
   };
 
-  if (authLoading || isLoading) {
+  if (isLoading) {
     return <Loading />;
   }
 
