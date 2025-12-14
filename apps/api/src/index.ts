@@ -17,4 +17,7 @@ app.route("/api/cards", cardController);
 app.route("/api/trades", tradeController);
 app.route("/api/search", searchController);
 
-export default app;
+export default {
+  port: 3100,
+  fetch: app.fetch,
+};
