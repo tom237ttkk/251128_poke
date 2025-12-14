@@ -28,8 +28,3 @@
 - 設計: `.kiro/specs/pokepoke-trade-platform/design.md`
 - タスク・実装順序: `.kiro/specs/pokepoke-trade-platform/tasks.md`
 - プロダクト/技術方針: `.kiro/steering/`
-
-## 開発メモ
-
-- 初期タスクは tasks.md のステップ 1（プロジェクト構造とツールのセットアップ）から着手します。
-- 変更は必ず `main` からブランチを切り、Conventional Commits でコミットします。
