@@ -10,17 +10,6 @@
   - `.kiro/specs/` 仕様・要件・タスク
   - `.kiro/steering/` 技術・構成
 
-## コミットとプルリクエスト
-
-- Conventional Commits を推奨：`docs: ...`、`fix: ...`、`chore: ...` 等。
-- 1 コミット=1 意図。本文で背景と主要変更点、関連 Issue（例: `#123`）を明記。
-- PR 要件: 概要、背景、変更点、影響範囲、確認手順、スクリーンショット/図（あれば）。Draft PR 歓迎（WIP より Draft 機能）。
-- ブランチ運用:
-  - すべて `main` から分岐。`main` への直接 push は禁止。
-  - 命名: `feature/<yymmdd>-<短い説明>`（例: `feature/251128-add-link-check`）。緊急修正は `hotfix/<yymmdd番号>-<短い説明>`。
-  - PR 作成前に最新化: `git fetch origin && git rebase origin/main`。
-  - マージ先は `main`。原則「Squash and merge」を推奨（履歴を簡潔に）。必要時のみ「Rebase and merge」。
-
 ## セキュリティと設定の注意
 
 - 機密情報（キー/内部 URL/個人情報）はコミット禁止。必要に応じてスタブ化。
