@@ -18,7 +18,22 @@ export class ApiClient {
       }));
       throw new Error(error.error?.message || "Request failed");
     }
-    return response.json();
+
+    if (response.status === 204) {
+      return undefined as T;
+    }
+
+    const responseText = await response.text();
+    if (!responseText) {
+      return undefined as T;
+    }
+
+    const contentType = response.headers.get("content-type");
+    if (contentType?.includes("application/json")) {
+      return JSON.parse(responseText) as T;
+    }
+
+    return responseText as unknown as T;
   }
 
   static async get<T>(endpoint: string): Promise<T> {
