@@ -20,7 +20,7 @@
   - UserService, CardCollectionService, TradeOfferService
   - CRUD・ステータス管理・コレクション選択ロジック
   - _Requirements: 2.x, 3.x, 4.5, 6.1_
-- [ ] A6. 検索・ブラックリスト・チャット API（元 Step7, 8）
+- [x] A6. 検索・ブラックリスト・チャット API（元 Step7, 8）
   - 検索ロジック、ブラックリスト反映、チャットメッセージ保存/取得
   - _Requirements: 4.x, 7.x_
 - [ ] A7. プロパティベーステスト（元 Step2.2, 2.4, 3.1*, 4.1*, 5.1*, 6.1*, 7.1\*）

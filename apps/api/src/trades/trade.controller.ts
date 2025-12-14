@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import * as tradeService from "./trade.service.js";
+import * as chatService from "../chat/chat.service.js";
 import { authMiddleware } from "../middlewares/auth.js";
 
 type Variables = {
@@ -55,6 +56,30 @@ app.patch("/:id/status", async (c) => {
     return c.json(updated);
   } catch (e: any) {
     return c.json({ error: e.message }, 400);
+  }
+});
+
+app.post("/:id/messages", async (c) => {
+  const user = c.get("user");
+  const id = c.req.param("id");
+  const { content } = await c.req.json();
+  if (!content) return c.json({ error: "Message content required" }, 400);
+  try {
+    const message = await chatService.sendMessage(id, user.id, content);
+    return c.json(message, 201);
+  } catch (e: any) {
+    return c.json({ error: e.message }, 403);
+  }
+});
+
+app.get("/:id/messages", async (c) => {
+  const user = c.get("user");
+  const id = c.req.param("id");
+  try {
+    const messages = await chatService.getMessages(id, user.id);
+    return c.json(messages);
+  } catch (e: any) {
+    return c.json({ error: e.message }, 403);
   }
 });
 
