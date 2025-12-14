@@ -49,7 +49,8 @@
   - _Requirements: 7.x_
 - [ ] B7. テスト
 
-  - Vitest 単体テスト + Playwright E2E（ログイン → 検索 → 提案閲覧のゴールデンパス）
+  - Vitest (+ React Testing Library) コンポーネント統合テスト
+  - Playwright E2E（ログイン → 検索 → 提案閲覧のゴールデンパス）
   - API スタブ/モックでバックエンド未完時も進行可能
 
 - [ ]\* 8.1 Property 26, 27, 28, 29 のプロパティベーステスト
