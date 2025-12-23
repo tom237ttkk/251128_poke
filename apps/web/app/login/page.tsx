@@ -16,8 +16,8 @@ export default function LoginPage() {
   const { login, register } = useAuth();
 
   const validatePokepokeUserId = (id: string): boolean => {
-    // ポケポケユーザーIDのバリデーション（XXX-XXXX-XXX形式）
-    const regex = /^[A-Z0-9]{3}-[A-Z0-9]{4}-[A-Z0-9]{3}$/;
+    // ポケポケユーザーIDのバリデーション（10文字の英数字）
+    const regex = /^[A-Z0-9]{10}$/;
     return regex.test(id);
   };
 
@@ -26,7 +26,7 @@ export default function LoginPage() {
     setError("");
 
     if (!validatePokepokeUserId(pokepokeUserId)) {
-      setError("ポケポケユーザーIDはXXX-XXXX-XXX形式で入力してください");
+      setError("ポケポケユーザーIDは10文字の英数字で入力してください");
       return;
     }
 
@@ -81,13 +81,10 @@ export default function LoginPage() {
               type="text"
               required
               className="input mt-2"
-              placeholder="例: ABC-1234-XYZ"
+              placeholder="例: ABC1234XYZ"
               value={pokepokeUserId}
               onChange={(e) => setPokepokeUserId(e.target.value.toUpperCase())}
             />
-            <p className="mt-2 text-xs text-gray-500">
-              XXX-XXXX-XXX形式で入力してください（英数字大文字）
-            </p>
           </div>
 
           {isRegistering && (
