@@ -14,8 +14,12 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (pokepokeUserId: string) => Promise<void>;
-  register: (pokepokeUserId: string) => Promise<void>;
+  login: (pokepokeUserId: string, password: string) => Promise<void>;
+  register: (
+    pokepokeUserId: string,
+    username: string,
+    password: string
+  ) => Promise<void>;
   logout: () => void;
 }
 
@@ -42,13 +46,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loadUser();
   }, []);
 
-  const login = async (pokepokeUserId: string) => {
-    const response = await AuthService.login(pokepokeUserId);
+  const login = async (pokepokeUserId: string, password: string) => {
+    const response = await AuthService.login(pokepokeUserId, password);
     setUser(response.user);
   };
 
-  const register = async (pokepokeUserId: string) => {
-    const response = await AuthService.register(pokepokeUserId);
+  const register = async (
+    pokepokeUserId: string,
+    username: string,
+    password: string
+  ) => {
+    const response = await AuthService.register(
+      pokepokeUserId,
+      username,
+      password
+    );
     setUser(response.user);
   };
 

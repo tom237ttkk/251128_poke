@@ -14,10 +14,14 @@ interface LoginResponse {
 }
 
 export class AuthService {
-  static async register(pokepokeUserId: string): Promise<RegisterResponse> {
+  static async register(
+    pokePokeId: string,
+    name: string,
+    password: string
+  ): Promise<RegisterResponse> {
     const response = await ApiClient.post<RegisterResponse>(
       "/api/auth/register",
-      { pokepokeUserId }
+      { pokePokeId, name, password }
     );
     if (response.token) {
       localStorage.setItem("token", response.token);
@@ -25,9 +29,13 @@ export class AuthService {
     return response;
   }
 
-  static async login(pokepokeUserId: string): Promise<LoginResponse> {
+  static async login(
+    pokePokeId: string,
+    password: string
+  ): Promise<LoginResponse> {
     const response = await ApiClient.post<LoginResponse>("/api/auth/login", {
-      pokepokeUserId,
+      pokePokeId,
+      password,
     });
     if (response.token) {
       localStorage.setItem("token", response.token);
