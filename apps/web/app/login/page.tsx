@@ -7,6 +7,8 @@ import { useAuth } from "@/lib/contexts/auth.context";
 
 export default function LoginPage() {
   const [pokepokeUserId, setPokepokeUserId] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [isRegistering, setIsRegistering] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -14,8 +16,8 @@ export default function LoginPage() {
   const { login, register } = useAuth();
 
   const validatePokepokeUserId = (id: string): boolean => {
-    // ポケポケユーザーIDのバリデーション（4-20文字の英数字）
-    const regex = /^[a-zA-Z0-9]{4,20}$/;
+    // ポケポケユーザーIDのバリデーション（XXX-XXXX-XXX形式）
+    const regex = /^[A-Z0-9]{3}-[A-Z0-9]{4}-[A-Z0-9]{3}$/;
     return regex.test(id);
   };
 
@@ -24,7 +26,17 @@ export default function LoginPage() {
     setError("");
 
     if (!validatePokepokeUserId(pokepokeUserId)) {
-      setError("ポケポケユーザーIDは4-20文字の英数字で入力してください");
+      setError("ポケポケユーザーIDはXXX-XXXX-XXX形式で入力してください");
+      return;
+    }
+
+    if (!password) {
+      setError("パスワードを入力してください");
+      return;
+    }
+
+    if (isRegistering && !username) {
+      setError("ユーザー名を入力してください");
       return;
     }
 
@@ -32,9 +44,9 @@ export default function LoginPage() {
 
     try {
       if (isRegistering) {
-        await register(pokepokeUserId);
+        await register(pokepokeUserId, username, password);
       } else {
-        await login(pokepokeUserId);
+        await login(pokepokeUserId, password);
       }
       router.push("/profile");
     } catch (err) {
@@ -69,13 +81,53 @@ export default function LoginPage() {
               type="text"
               required
               className="input mt-2"
-              placeholder="ポケポケユーザーID"
+              placeholder="例: ABC-1234-XYZ"
               value={pokepokeUserId}
-              onChange={(e) => setPokepokeUserId(e.target.value)}
+              onChange={(e) => setPokepokeUserId(e.target.value.toUpperCase())}
             />
             <p className="mt-2 text-xs text-gray-500">
-              4-20文字の英数字で入力してください
+              XXX-XXXX-XXX形式で入力してください（英数字大文字）
             </p>
+          </div>
+
+          {isRegistering && (
+            <div>
+              <label
+                htmlFor="username"
+                className="block text-sm font-medium text-gray-700"
+              >
+                ユーザー名
+              </label>
+              <input
+                id="username"
+                name="username"
+                type="text"
+                required
+                className="input mt-2"
+                placeholder="ユーザー名"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </div>
+          )}
+
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
+              パスワード
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              required
+              className="input mt-2"
+              placeholder="パスワード"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </div>
 
           {error && (
