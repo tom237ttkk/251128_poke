@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import * as cardService from "./card.service.js";
+import * as cardMasterService from "./card-master.service.js";
 import { authMiddleware } from "../middlewares/auth.js";
 
 type Variables = {
@@ -11,6 +12,13 @@ type Variables = {
 };
 
 const app = new Hono<{ Variables: Variables }>();
+
+// Public endpoint for card master
+app.get("/master", async (c) => {
+  const packId = c.req.query("packId");
+  const cards = await cardMasterService.getCardMaster({ packId });
+  return c.json(cards);
+});
 
 app.use("*", authMiddleware);
 

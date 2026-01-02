@@ -80,11 +80,16 @@ RESTful API を採用し、以下のエンドポイントを提供：
 - GET /api/users/:userId - ユーザープロフィール取得
 - GET /api/users/:userId/trade-offers - ユーザーのトレード提案一覧
 
+**カードマスター:**
+
+- GET /api/cards/master - カードマスター一覧取得（クエリパラメータ: `packId` でフィルタリング可能）
+- GET /api/packs - 収録パック一覧取得
+
 **カードコレクション:**
 
 - GET /api/users/me/cards - 自分のカードコレクション取得
-- POST /api/users/me/cards/wanted - 欲しいカードを追加
-- POST /api/users/me/cards/offered - 出せるカードを追加
+- POST /api/users/me/cards/wanted - 欲しいカードを追加（リクエストボディ: `{ cardId, quantity }`）
+- POST /api/users/me/cards/offered - 出せるカードを追加（リクエストボディ: `{ cardId, quantity }`）
 - DELETE /api/users/me/cards/:cardId - カードを削除
 - PUT /api/users/me/cards/:cardId - カード数量を更新
 
@@ -125,7 +130,7 @@ RESTful API を採用し、以下のエンドポイントを提供：
 **Components:**
 
 - `CardListComponent` - カード一覧表示
-- `CardSelectorComponent` - カードコレクションから選択
+- `CardSelectorComponent` - カードマスター一覧から選択してコレクションに追加
 - `TradeOfferCardComponent` - トレード提案カード表示
 - `ChatBoxComponent` - チャット表示・送信
 - `SearchBarComponent` - カード検索バー
@@ -134,6 +139,8 @@ RESTful API を採用し、以下のエンドポイントを提供：
 
 - `AuthService` - 認証 API 呼び出し
 - `UserService` - ユーザー API 呼び出し
+- `PackService` - 収録パック API 呼び出し
+- `CardMasterService` - カードマスター API 呼び出し
 - `CardCollectionService` - カードコレクション API 呼び出し
 - `TradeOfferService` - トレード提案 API 呼び出し
 - `MessageService` - メッセージ API 呼び出し
@@ -145,6 +152,8 @@ RESTful API を採用し、以下のエンドポイントを提供：
 
 - `authRoutes` - 認証エンドポイント
 - `userRoutes` - ユーザーエンドポイント
+- `packRoutes` - 収録パックエンドポイント
+- `cardMasterRoutes` - カードマスターエンドポイント
 - `cardCollectionRoutes` - カードコレクションエンドポイント
 - `tradeOfferRoutes` - トレード提案エンドポイント
 - `messageRoutes` - チャットエンドポイント
@@ -154,6 +163,8 @@ RESTful API を採用し、以下のエンドポイントを提供：
 
 - `AuthService` - 認証ロジック
 - `UserService` - ユーザー操作
+- `PackService` - 収録パック操作
+- `CardMasterService` - カードマスター操作
 - `CardCollectionService` - カードコレクション操作
 - `TradeOfferService` - トレード提案操作
 - `MessageService` - メッセージ操作
@@ -184,18 +195,48 @@ model User {
   messages        Message[]
 }
 
+model Pack {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  code        String?  @unique
+  releaseDate DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  cards Card[]
+}
+
+model Card {
+  id          String   @id @default(uuid())
+  packId      String
+  name        String   @unique
+  description String?
+  rarity      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  pack             Pack             @relation(fields: [packId], references: [id], onDelete: Restrict)
+  collectionItems  CardCollection[]
+  tradeOfferCards  TradeOfferCard[]
+
+  @@index([packId])
+}
+
 model CardCollection {
   id        String   @id @default(uuid())
   userId    String
-  cardName  String
+  cardId    String
   cardType  String   // 'wanted' | 'offered'
   quantity  Int      @default(1)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  card Card @relation(fields: [cardId], references: [id], onDelete: Restrict)
 
   @@index([userId])
+  @@index([cardId])
+  @@unique([userId, cardId, cardType])
 }
 
 enum TradeOfferStatus {
@@ -221,15 +262,16 @@ model TradeOffer {
 model TradeOfferCard {
   id           String   @id @default(uuid())
   tradeOfferId String
-  cardName     String
+  cardId       String
   cardType     String   // 'wanted' | 'offered'
   quantity     Int      @default(1)
   createdAt    DateTime @default(now())
 
   tradeOffer TradeOffer @relation(fields: [tradeOfferId], references: [id], onDelete: Cascade)
+  card       Card       @relation(fields: [cardId], references: [id], onDelete: Restrict)
 
   @@index([tradeOfferId])
-  @@index([cardName])
+  @@index([cardId])
 }
 
 model Message {
@@ -258,14 +300,35 @@ interface User {
   updatedAt: Date;
 }
 
+interface Pack {
+  id: string;
+  name: string;
+  code?: string;
+  releaseDate?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface Card {
+  id: string;
+  packId: string;
+  name: string;
+  description?: string;
+  rarity?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  pack?: Pack;
+}
+
 interface CardCollection {
   id: string;
   userId: string;
-  cardName: string;
+  cardId: string;
   cardType: "wanted" | "offered";
   quantity: number;
   createdAt: Date;
   updatedAt: Date;
+  card?: Card;
 }
 
 interface TradeOffer {
@@ -280,10 +343,11 @@ interface TradeOffer {
 interface TradeOfferCard {
   id: string;
   tradeOfferId: string;
-  cardName: string;
+  cardId: string;
   cardType: "wanted" | "offered";
   quantity: number;
   createdAt: Date;
+  card?: Card;
 }
 
 interface Message {

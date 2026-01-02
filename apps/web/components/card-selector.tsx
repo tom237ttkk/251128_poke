@@ -1,27 +1,68 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { PackService } from "@/lib/services/pack.service";
+import { CardMasterService } from "@/lib/services/card-master.service";
+import type { Pack, Card } from "@/lib/types";
 
 interface CardSelectorProps {
   type: "wanted" | "offered";
-  onAdd: (cardName: string, quantity: number) => Promise<void>;
+  onAdd: (cardId: string, quantity: number) => Promise<void>;
 }
 
 export function CardSelector({ type, onAdd }: CardSelectorProps) {
-  const [cardName, setCardName] = useState("");
+  const [packs, setPacks] = useState<Pack[]>([]);
+  const [cards, setCards] = useState<Card[]>([]);
+  const [selectedPackId, setSelectedPackId] = useState("");
+  const [selectedCardId, setSelectedCardId] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingPacks, setIsLoadingPacks] = useState(true);
 
   const title = type === "wanted" ? "欲しいカードを追加" : "出せるカードを追加";
 
+  useEffect(() => {
+    const loadPacks = async () => {
+      try {
+        const packsData = await PackService.getPacks();
+        setPacks(packsData);
+      } catch (error) {
+        console.error("Failed to load packs:", error);
+      } finally {
+        setIsLoadingPacks(false);
+      }
+    };
+
+    loadPacks();
+  }, []);
+
+  useEffect(() => {
+    const loadCards = async () => {
+      if (!selectedPackId) {
+        setCards([]);
+        return;
+      }
+
+      try {
+        const cardsData = await CardMasterService.getCardMaster(selectedPackId);
+        setCards(cardsData);
+      } catch (error) {
+        console.error("Failed to load cards:", error);
+      }
+    };
+
+    loadCards();
+  }, [selectedPackId]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!cardName.trim()) return;
+    if (!selectedCardId) return;
 
     setIsLoading(true);
     try {
-      await onAdd(cardName.trim(), quantity);
-      setCardName("");
+      await onAdd(selectedCardId, quantity);
+      setSelectedPackId("");
+      setSelectedCardId("");
       setQuantity(1);
     } catch (error) {
       console.error("Failed to add card:", error);
@@ -36,21 +77,63 @@ export function CardSelector({ type, onAdd }: CardSelectorProps) {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label
-            htmlFor={`card-name-${type}`}
+            htmlFor={`pack-${type}`}
             className="block text-sm font-medium text-gray-700"
           >
-            カード名
+            収録パック
           </label>
-          <input
-            type="text"
-            id={`card-name-${type}`}
-            value={cardName}
-            onChange={(e) => setCardName(e.target.value)}
+          <select
+            id={`pack-${type}`}
+            value={selectedPackId}
+            onChange={(e) => {
+              setSelectedPackId(e.target.value);
+              setSelectedCardId("");
+            }}
             className="input mt-2"
-            placeholder="カード名を入力"
             required
-          />
+            disabled={isLoadingPacks}
+          >
+            <option value="">
+              {isLoadingPacks ? "読み込み中..." : "パックを選択"}
+            </option>
+            {packs.map((pack) => (
+              <option key={pack.id} value={pack.id}>
+                {pack.name} {pack.code ? `(${pack.code})` : ""}
+              </option>
+            ))}
+          </select>
         </div>
+
+        <div>
+          <label
+            htmlFor={`card-${type}`}
+            className="block text-sm font-medium text-gray-700"
+          >
+            カード
+          </label>
+          <select
+            id={`card-${type}`}
+            value={selectedCardId}
+            onChange={(e) => setSelectedCardId(e.target.value)}
+            className="input mt-2"
+            required
+            disabled={!selectedPackId || cards.length === 0}
+          >
+            <option value="">
+              {!selectedPackId
+                ? "まずパックを選択してください"
+                : cards.length === 0
+                ? "カードがありません"
+                : "カードを選択"}
+            </option>
+            {cards.map((card) => (
+              <option key={card.id} value={card.id}>
+                {card.name} {card.rarity ? `[${card.rarity}]` : ""}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <div>
           <label
             htmlFor={`quantity-${type}`}
@@ -68,9 +151,10 @@ export function CardSelector({ type, onAdd }: CardSelectorProps) {
             required
           />
         </div>
+
         <button
           type="submit"
-          disabled={isLoading}
+          disabled={isLoading || !selectedCardId}
           className="btn btn-primary w-full"
         >
           {isLoading ? "追加中..." : "追加"}

@@ -19,21 +19,21 @@ export class CardCollectionService {
   }
 
   static async addWantedCard(
-    cardName: string,
+    cardId: string,
     quantity: number
   ): Promise<CardCollection> {
     return ApiClient.post<CardCollection>("/api/users/me/cards/wanted", {
-      cardName,
+      cardId,
       quantity,
     });
   }
 
   static async addOfferedCard(
-    cardName: string,
+    cardId: string,
     quantity: number
   ): Promise<CardCollection> {
     return ApiClient.post<CardCollection>("/api/users/me/cards/offered", {
-      cardName,
+      cardId,
       quantity,
     });
   }
