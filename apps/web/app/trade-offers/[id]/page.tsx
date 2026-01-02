@@ -11,6 +11,8 @@ import { MessageService } from "@/lib/services/message.service";
 import { TradeOfferService } from "@/lib/services/trade-offer.service";
 import type { Message, TradeOffer } from "@/lib/types";
 
+type TradeStatusUpdate = "ACCEPTED" | "REJECTED" | "CANCELED";
+
 export default function TradeOfferDetailPage() {
   const params = useParams();
   const offerId = params.id as string;
@@ -54,7 +56,7 @@ export default function TradeOfferDetailPage() {
     }
   };
 
-  const handleStatusChange = async (status: "active" | "closed") => {
+  const handleStatusChange = async (status: TradeStatusUpdate) => {
     try {
       const updatedOffer = await TradeOfferService.updateTradeOfferStatus(
         offerId,
@@ -111,17 +113,15 @@ export default function TradeOfferDetailPage() {
             </h1>
             {isOwner && (
               <div className="flex space-x-2">
-                <button
-                  onClick={() =>
-                    handleStatusChange(
-                      tradeOffer.status === "active" ? "closed" : "active"
-                    )
-                  }
-                  className="btn btn-warning"
-                  type="button"
-                >
-                  {tradeOffer.status === "active" ? "クローズする" : "再開する"}
-                </button>
+                {tradeOffer.status === "active" && (
+                  <button
+                    onClick={() => handleStatusChange("CANCELED")}
+                    className="btn btn-warning"
+                    type="button"
+                  >
+                    クローズする
+                  </button>
+                )}
                 <button
                   onClick={handleDelete}
                   className="btn btn-danger"
