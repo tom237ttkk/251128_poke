@@ -4,8 +4,8 @@ import prisma from "../prisma.js";
 const JWT_SECRET = process.env.JWT_SECRET || "secret";
 
 const validatePokePokeId = (id: string) => {
-  // Requirement: XXX-XXXX-XXX format
-  return /^[A-Z0-9]{3}-[A-Z0-9]{4}-[A-Z0-9]{3}$/.test(id);
+  // Requirement: 10 characters alphanumeric
+  return /^[A-Z0-9]{10}$/.test(id);
 };
 
 export const register = async (

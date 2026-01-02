@@ -17,7 +17,7 @@ export function TradeOfferCard({ tradeOffer }: TradeOfferCardProps) {
         <div className="flex items-center justify-between mb-4">
           <div>
             <p className="text-sm text-gray-500">
-              作成者: {tradeOffer.user?.pokepokeUserId || "不明"}
+              作成者: {tradeOffer.user?.pokePokeId || "不明"}
             </p>
             <p className="text-xs text-gray-400">
               {new Date(tradeOffer.createdAt).toLocaleDateString("ja-JP")}

@@ -40,7 +40,7 @@ export default function ProfilePage() {
         setTradeOffers(offersData);
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : "データの読み込みに失敗しました",
+          err instanceof Error ? err.message : "データの読み込みに失敗しました"
         );
       } finally {
         setIsLoading(false);
@@ -54,12 +54,12 @@ export default function ProfilePage() {
     try {
       const newCard = await CardCollectionService.addWantedCard(
         cardName,
-        quantity,
+        quantity
       );
       setCards([...cards, newCard]);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "カードの追加に失敗しました",
+        err instanceof Error ? err.message : "カードの追加に失敗しました"
       );
     }
   };
@@ -68,12 +68,12 @@ export default function ProfilePage() {
     try {
       const newCard = await CardCollectionService.addOfferedCard(
         cardName,
-        quantity,
+        quantity
       );
       setCards([...cards, newCard]);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "カードの追加に失敗しました",
+        err instanceof Error ? err.message : "カードの追加に失敗しました"
       );
     }
   };
@@ -84,7 +84,7 @@ export default function ProfilePage() {
       setCards(cards.filter((card) => card.id !== cardId));
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "カードの削除に失敗しました",
+        err instanceof Error ? err.message : "カードの削除に失敗しました"
       );
     }
   };
@@ -93,7 +93,7 @@ export default function ProfilePage() {
     try {
       const updatedCard = await CardCollectionService.updateCardQuantity(
         cardId,
-        quantity,
+        quantity
       );
       setCards(cards.map((card) => (card.id === cardId ? updatedCard : card)));
     } catch (err) {
@@ -117,8 +117,9 @@ export default function ProfilePage() {
           <h1 className="text-3xl font-semibold tracking-tight text-gray-900">
             プロフィール
           </h1>
-          <p className="mt-2 text-sm text-gray-600">
-            ポケポケユーザーID: {user.pokepokeUserId}
+          <p className="mt-2 text-sm text-gray-600">ユーザー名: {user.name}</p>
+          <p className="text-sm text-gray-600">
+            ポケポケユーザーID: {user.pokePokeId}
           </p>
         </div>
 

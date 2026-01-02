@@ -45,7 +45,7 @@ export function Navigation() {
             {isAuthenticated ? (
               <>
                 <span className="hidden rounded-full border border-black/5 bg-white/60 px-3 py-1 text-sm text-gray-700 sm:inline-flex">
-                  {user?.pokepokeUserId}
+                  {user?.pokePokeId}
                 </span>
                 <button
                   onClick={handleLogout}

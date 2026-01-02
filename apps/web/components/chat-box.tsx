@@ -64,7 +64,7 @@ export function ChatBox({ messages, onSendMessage }: ChatBoxProps) {
                   }`}
                 >
                   <p className="text-sm font-medium mb-1">
-                    {message.sender?.pokepokeUserId || "不明"}
+                    {message.sender?.pokePokeId || "不明"}
                   </p>
                   <p className="text-sm">{message.content}</p>
                   <p
