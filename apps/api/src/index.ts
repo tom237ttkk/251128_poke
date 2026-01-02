@@ -29,7 +29,7 @@ app.route("/api/auth", authController);
 app.route("/api/users", userController);
 app.route("/api/packs", packController);
 app.route("/api/cards", cardController);
-app.route("/api/trades", tradeController);
+app.route("/api/trade-offers", tradeController);
 app.route("/api/search", searchController);
 
 export default {

@@ -7,7 +7,7 @@ export class MessageService {
   static async getMessages(
     offerId: string,
     page: number = 1
-  ): Promise<{ messages: Message[]; total: number }> {
+  ): Promise<Message[]> {
     const params = new URLSearchParams();
     params.append("page", page.toString());
 

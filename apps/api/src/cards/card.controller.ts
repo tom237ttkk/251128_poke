@@ -30,23 +30,33 @@ app.get("/", async (c) => {
 
 app.put("/", async (c) => {
   const user = c.get("user");
-  const { cardId, quantity } = await c.req.json();
-  if (!cardId || quantity === undefined) {
-    return c.json({ error: "Missing cardId or quantity" }, 400);
+  const { cardId, quantity, cardType } = await c.req.json();
+  const parsedQuantity = Number(quantity);
+  if (!cardId || !Number.isFinite(parsedQuantity) || parsedQuantity <= 0) {
+    return c.json({ error: "Missing cardId or invalid quantity" }, 400);
   }
-  const item = await cardService.updateCollection(
-    user.id,
-    cardId,
-    Number(quantity)
-  );
-  return c.json(item);
+  try {
+    const item = await cardService.updateCollection(
+      user.id,
+      cardId,
+      parsedQuantity,
+      cardType
+    );
+    return c.json(item);
+  } catch (e: any) {
+    return c.json({ error: e.message }, 400);
+  }
 });
 
 app.delete("/:cardId", async (c) => {
   const user = c.get("user");
-  const cardId = c.req.param("cardId");
-  await cardService.removeFromCollection(user.id, cardId);
-  return c.json({ success: true });
+  const itemId = c.req.param("cardId");
+  try {
+    await cardService.removeFromCollection(user.id, itemId);
+    return c.json({ success: true });
+  } catch (e: any) {
+    return c.json({ error: e.message }, 404);
+  }
 });
 
 export default app;

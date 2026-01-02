@@ -30,7 +30,7 @@ export default function TradeOfferDetailPage() {
           MessageService.getMessages(offerId),
         ]);
         setTradeOffer(offerData);
-        setMessages(messagesData.messages);
+        setMessages(messagesData);
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "データの読み込みに失敗しました"
