@@ -33,7 +33,7 @@ export default function TradeOfferDetailPage() {
         setMessages(messagesData.messages);
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : "データの読み込みに失敗しました",
+          err instanceof Error ? err.message : "データの読み込みに失敗しました"
         );
       } finally {
         setIsLoading(false);
@@ -49,7 +49,7 @@ export default function TradeOfferDetailPage() {
       setMessages([...messages, newMessage]);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "メッセージの送信に失敗しました",
+        err instanceof Error ? err.message : "メッセージの送信に失敗しました"
       );
     }
   };
@@ -58,12 +58,12 @@ export default function TradeOfferDetailPage() {
     try {
       const updatedOffer = await TradeOfferService.updateTradeOfferStatus(
         offerId,
-        status,
+        status
       );
       setTradeOffer(updatedOffer);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "ステータスの更新に失敗しました",
+        err instanceof Error ? err.message : "ステータスの更新に失敗しました"
       );
     }
   };
@@ -114,7 +114,7 @@ export default function TradeOfferDetailPage() {
                 <button
                   onClick={() =>
                     handleStatusChange(
-                      tradeOffer.status === "active" ? "closed" : "active",
+                      tradeOffer.status === "active" ? "closed" : "active"
                     )
                   }
                   className="btn btn-warning"
@@ -134,7 +134,7 @@ export default function TradeOfferDetailPage() {
           </div>
           <div className="mt-2 flex items-center space-x-4">
             <p className="text-sm text-gray-600">
-              作成者: {tradeOffer.user?.pokepokeUserId || "不明"}
+              作成者: {tradeOffer.user?.pokePokeId || "不明"}
             </p>
             <span
               className={`badge ${

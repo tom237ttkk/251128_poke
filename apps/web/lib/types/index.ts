@@ -2,11 +2,11 @@
 
 export interface User {
   id: string;
-  pokepokeUserId: string;
-  isAdmin: boolean;
+  pokePokeId: string;
+  name: string;
+  role: string;
   isBlacklisted: boolean;
   createdAt: Date;
-  updatedAt: Date;
 }
 
 export interface CardCollection {
