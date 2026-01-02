@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import authController from "./auth/auth.controller.js";
 import userController from "./users/user.controller.js";
+import packController from "./packs/pack.controller.js";
 import cardController from "./cards/card.controller.js";
 import tradeController from "./trades/trade.controller.js";
 import searchController from "./search/search.controller.js";
@@ -26,8 +27,9 @@ app.get("/", (c) => {
 
 app.route("/api/auth", authController);
 app.route("/api/users", userController);
+app.route("/api/packs", packController);
 app.route("/api/cards", cardController);
-app.route("/api/trades", tradeController);
+app.route("/api/trade-offers", tradeController);
 app.route("/api/search", searchController);
 
 export default {

@@ -24,18 +24,36 @@ model User {
   sentMessages         Message[]        @relation("Sender")
 }
 
+model Pack {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  code        String?  @unique
+  releaseDate DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  cards Card[]
+}
+
+model Card {
+  id          String   @id @default(uuid())
+  packId      String
+  name        String   @unique
+  description String?
+  rarity      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  pack             Pack             @relation(fields: [packId], references: [id], onDelete: Restrict)
+  collectionItems  CollectionItem[]
+  tradeOfferCards  TradeOfferCard[]
+
+  @@index([packId])
+}
+
 model CardCollection {
   id        String   @id @default(uuid())
-  userId    String   @unique 
-                   // Given the requirements, likely we store simplified data or relations.
-                   // "CardCollectionService... コレクション選択ロジック" implies complexity. 
-                   // However, usually detailed cards are stored as separate relations or JSON. 
-                   // Let's use a simplified approach or a relation to a CardItem model if we want to query easily.
-                   // But for now, let's assume we might need a dedicated table for cards in collection to query "users who have card X".
-                   
-  // Actually, to implement "search logic" (A6) effectively, we likely need to query "who has card X".
-  // Storing as JSON makes that harder/slower in SQLite/MySQL without native JSON ops or robust indexing.
-  // Let's make a separate model for items in collection.
+  userId    String   @unique
   items     CollectionItem[]
 
   user      User     @relation(fields: [userId], references: [id])
@@ -45,15 +63,16 @@ model CollectionItem {
   id               String         @id @default(uuid())
   collectionId     String
   cardId           String
+  cardType         String         // WANTED or OFFERED
   quantity         Int            @default(1)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
   
-  collection       CardCollection @relation(fields: [collectionId], references: [id])
-  
-  // For TradeOffer relations if we want to link specific instances, 
-  // but usually trade offers just reference card IDs and verification checks ownership.
-  // We'll link TradeOfferCard to CardId (string) generally.
+  collection       CardCollection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  card             Card           @relation(fields: [cardId], references: [id], onDelete: Restrict)
 
-  @@unique([collectionId, cardId])
+  @@unique([collectionId, cardId, cardType])
+  @@index([cardId])
 }
 
 model TradeOffer {
@@ -77,8 +96,13 @@ model TradeOfferCard {
   cardId        String
   type          String     // WANTED (sender wants), GIVEN (sender gives)
   quantity      Int        @default(1)
+  createdAt     DateTime   @default(now())
   
-  tradeOffer    TradeOffer @relation(fields: [tradeOfferId], references: [id])
+  tradeOffer    TradeOffer @relation(fields: [tradeOfferId], references: [id], onDelete: Cascade)
+  card          Card       @relation(fields: [cardId], references: [id], onDelete: Restrict)
+
+  @@index([tradeOfferId])
+  @@index([cardId])
 }
 
 model Message {

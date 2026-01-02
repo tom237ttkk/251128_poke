@@ -32,7 +32,7 @@ export class TradeOfferService {
 
   static async updateTradeOfferStatus(
     offerId: string,
-    status: "active" | "closed"
+    status: "ACCEPTED" | "REJECTED" | "CANCELED"
   ): Promise<TradeOffer> {
     return ApiClient.patch(`/api/trade-offers/${offerId}/status`, { status });
   }

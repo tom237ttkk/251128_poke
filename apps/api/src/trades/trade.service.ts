@@ -6,14 +6,80 @@ interface TradeItem {
   quantity: number;
 }
 
+const normalizeStatus = (status: string) => {
+  const lowered = status.toLowerCase();
+  if (lowered === "active" || status === "PENDING") return "active";
+  if (lowered === "closed") return "closed";
+  return "closed";
+};
+
+const mapTradeOfferCard = (detail: {
+  id: string;
+  tradeOfferId: string;
+  type: string;
+  quantity: number;
+  createdAt: Date;
+  card: { name: string } | null;
+}) => ({
+  id: detail.id,
+  tradeOfferId: detail.tradeOfferId,
+  cardName: detail.card?.name ?? "",
+  cardType: detail.type === "WANTED" ? "wanted" : "offered",
+  quantity: detail.quantity,
+  createdAt: detail.createdAt,
+});
+
+const mapTradeOffer = (trade: {
+  id: string;
+  senderId: string;
+  status: string;
+  createdAt: Date;
+  updatedAt: Date;
+  sender?: {
+    id: string;
+    pokePokeId: string;
+    name: string;
+    role: string;
+    isBlacklisted: boolean;
+    createdAt: Date;
+  } | null;
+  details?: Array<{
+    id: string;
+    tradeOfferId: string;
+    type: string;
+    quantity: number;
+    createdAt: Date;
+    card: { name: string } | null;
+  }>;
+}) => ({
+  id: trade.id,
+  userId: trade.senderId,
+  status: normalizeStatus(trade.status),
+  createdAt: trade.createdAt,
+  updatedAt: trade.updatedAt,
+  cards: trade.details ? trade.details.map(mapTradeOfferCard) : [],
+  user: trade.sender
+    ? {
+        id: trade.sender.id,
+        pokePokeId: trade.sender.pokePokeId,
+        name: trade.sender.name,
+        role: trade.sender.role,
+        isBlacklisted: trade.sender.isBlacklisted,
+        createdAt: trade.sender.createdAt,
+      }
+    : undefined,
+});
+
 export const createTradeOffer = async (
   senderId: string,
-  receiverId: string,
+  receiverId: string | undefined,
   items: TradeItem[]
 ) => {
-  if (senderId === receiverId) {
+  if (receiverId && senderId === receiverId) {
     throw new Error("Cannot trade with yourself");
   }
+
+  const targetReceiverId = receiverId ?? senderId;
 
   // Validate sender owns GIVEN cards
   const givenItems = items.filter((i) => i.type === "GIVEN");
@@ -43,7 +109,7 @@ export const createTradeOffer = async (
   const trade = await prisma.tradeOffer.create({
     data: {
       senderId,
-      receiverId,
+      receiverId: targetReceiverId,
       status: "PENDING",
       details: {
         create: items.map((i) => ({
@@ -53,10 +119,22 @@ export const createTradeOffer = async (
         })),
       },
     },
-    include: { details: true },
+    include: {
+      sender: {
+        select: {
+          id: true,
+          pokePokeId: true,
+          name: true,
+          role: true,
+          isBlacklisted: true,
+          createdAt: true,
+        },
+      },
+      details: { include: { card: { select: { name: true } } } },
+    },
   });
 
-  return trade;
+  return mapTradeOffer(trade);
 };
 
 export const getTradeOffers = async (
@@ -71,24 +149,44 @@ export const getTradeOffers = async (
   return prisma.tradeOffer.findMany({
     where,
     include: {
-      sender: { select: { id: true, name: true, pokePokeId: true } },
+      sender: {
+        select: {
+          id: true,
+          pokePokeId: true,
+          name: true,
+          role: true,
+          isBlacklisted: true,
+          createdAt: true,
+        },
+      },
       receiver: { select: { id: true, name: true, pokePokeId: true } },
-      details: true,
+      details: { include: { card: { select: { name: true } } } },
     },
     orderBy: { createdAt: "desc" },
-  });
+  }).then((trades) => trades.map(mapTradeOffer));
 };
 
 export const getTradeOfferById = async (id: string) => {
-  return prisma.tradeOffer.findUnique({
+  return prisma.tradeOffer
+    .findUnique({
     where: { id },
     include: {
-      sender: { select: { id: true, name: true, pokePokeId: true } },
+      sender: {
+        select: {
+          id: true,
+          pokePokeId: true,
+          name: true,
+          role: true,
+          isBlacklisted: true,
+          createdAt: true,
+        },
+      },
       receiver: { select: { id: true, name: true, pokePokeId: true } },
-      details: true,
+      details: { include: { card: { select: { name: true } } } },
       messages: { orderBy: { createdAt: "asc" } },
     },
-  });
+  })
+    .then((trade) => (trade ? mapTradeOffer(trade) : null));
 };
 
 export const updateTradeStatus = async (
@@ -118,8 +216,24 @@ export const updateTradeStatus = async (
     throw new Error("Invalid status");
   }
 
-  return prisma.tradeOffer.update({
+  const updated = await prisma.tradeOffer.update({
     where: { id: tradeId },
     data: { status },
+    include: {
+      sender: {
+        select: {
+          id: true,
+          pokePokeId: true,
+          name: true,
+          role: true,
+          isBlacklisted: true,
+          createdAt: true,
+        },
+      },
+      receiver: { select: { id: true, name: true, pokePokeId: true } },
+      details: { include: { card: { select: { name: true } } } },
+    },
   });
+
+  return mapTradeOffer(updated);
 };

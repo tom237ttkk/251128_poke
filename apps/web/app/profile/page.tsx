@@ -50,10 +50,10 @@ export default function ProfilePage() {
     loadData();
   }, [user]);
 
-  const handleAddWantedCard = async (cardName: string, quantity: number) => {
+  const handleAddWantedCard = async (cardId: string, quantity: number) => {
     try {
       const newCard = await CardCollectionService.addWantedCard(
-        cardName,
+        cardId,
         quantity
       );
       setCards([...cards, newCard]);
@@ -64,10 +64,10 @@ export default function ProfilePage() {
     }
   };
 
-  const handleAddOfferedCard = async (cardName: string, quantity: number) => {
+  const handleAddOfferedCard = async (cardId: string, quantity: number) => {
     try {
       const newCard = await CardCollectionService.addOfferedCard(
-        cardName,
+        cardId,
         quantity
       );
       setCards([...cards, newCard]);
