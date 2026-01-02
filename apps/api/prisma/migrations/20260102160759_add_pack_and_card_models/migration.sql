@@ -41,7 +41,7 @@ CREATE TABLE "new_CollectionItem" (
     CONSTRAINT "CollectionItem_collectionId_fkey" FOREIGN KEY ("collectionId") REFERENCES "CardCollection" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT "CollectionItem_cardId_fkey" FOREIGN KEY ("cardId") REFERENCES "Card" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
-INSERT INTO "new_CollectionItem" ("cardId", "collectionId", "id", "quantity") SELECT "cardId", "collectionId", "id", "quantity" FROM "CollectionItem";
+INSERT INTO "new_CollectionItem" ("cardId", "collectionId", "id", "quantity", "cardType", "createdAt", "updatedAt") SELECT "cardId", "collectionId", "id", "quantity", 'wanted', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP FROM "CollectionItem";
 DROP TABLE "CollectionItem";
 ALTER TABLE "new_CollectionItem" RENAME TO "CollectionItem";
 CREATE INDEX "CollectionItem_cardId_idx" ON "CollectionItem"("cardId");
