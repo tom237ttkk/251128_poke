@@ -115,10 +115,22 @@ app.post("/", async (c) => {
 });
 
 app.get("/", async (c) => {
-  const user = c.get("user");
   const type = c.req.query("type") as "sent" | "received" | undefined;
-  const trades = await tradeService.getTradeOffers(user.id, type);
-  return c.json(trades);
+  const cardName = c.req.query("cardName");
+  const pageParam = c.req.query("page");
+  const page = pageParam ? Number(pageParam) : 1;
+
+  if (type) {
+    const user = c.get("user");
+    const trades = await tradeService.getTradeOffers(user.id, type);
+    return c.json(trades);
+  }
+
+  const result = await tradeService.searchTradeOffers({
+    cardName: cardName ?? undefined,
+    page,
+  });
+  return c.json(result);
 });
 
 app.get("/:id", async (c) => {

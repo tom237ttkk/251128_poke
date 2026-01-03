@@ -166,6 +166,66 @@ export const getTradeOffers = async (
   }).then((trades) => trades.map(mapTradeOffer));
 };
 
+export const searchTradeOffers = async ({
+  cardName,
+  page = 1,
+  pageSize = 20,
+}: {
+  cardName?: string;
+  page?: number;
+  pageSize?: number;
+}) => {
+  const normalizedPage = Number.isFinite(page) && page > 0 ? page : 1;
+  const normalizedPageSize =
+    Number.isFinite(pageSize) && pageSize > 0 ? pageSize : 20;
+
+  const where: any = {
+    status: "PENDING",
+    sender: { isBlacklisted: false },
+  };
+
+  if (cardName && cardName.trim().length > 0) {
+    where.details = {
+      some: {
+        type: "GIVEN",
+        card: {
+          name: {
+            contains: cardName.trim(),
+          },
+        },
+      },
+    };
+  }
+
+  const total = await prisma.tradeOffer.count({ where });
+
+  const trades = await prisma.tradeOffer.findMany({
+    where,
+    include: {
+      sender: {
+        select: {
+          id: true,
+          pokePokeId: true,
+          name: true,
+          role: true,
+          isBlacklisted: true,
+          createdAt: true,
+        },
+      },
+      receiver: { select: { id: true, name: true, pokePokeId: true } },
+      details: { include: { card: { select: { name: true } } } },
+    },
+    orderBy: { createdAt: "desc" },
+    skip: (normalizedPage - 1) * normalizedPageSize,
+    take: normalizedPageSize,
+  });
+
+  return {
+    tradeOffers: trades.map(mapTradeOffer),
+    total,
+  };
+};
+
 export const getTradeOfferById = async (id: string) => {
   return prisma.tradeOffer
     .findUnique({
