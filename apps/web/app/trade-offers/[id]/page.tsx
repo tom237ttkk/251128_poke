@@ -83,10 +83,31 @@ export default function TradeOfferDetailPage() {
     };
   }, [offerId]);
 
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const source = MessageService.streamMessages(offerId, (incoming) => {
+      setMessages((prev) => {
+        if (prev.some((message) => message.id === incoming.id)) {
+          return prev;
+        }
+        return [...prev, incoming];
+      });
+    });
+
+    return () => {
+      source?.close();
+    };
+  }, [offerId, isAuthenticated]);
+
   const handleSendMessage = async (content: string) => {
     try {
       const newMessage = await MessageService.sendMessage(offerId, content);
-      setMessages([...messages, newMessage]);
+      setMessages((prev) => {
+        if (prev.some((message) => message.id === newMessage.id)) {
+          return prev;
+        }
+        return [...prev, newMessage];
+      });
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "メッセージの送信に失敗しました"

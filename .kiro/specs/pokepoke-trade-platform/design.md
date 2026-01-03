@@ -52,7 +52,7 @@ MVP として、コア機能に焦点を当て、シンプルで拡張可能な�
 │   Next.js SPA   │
 │   (Frontend)    │
 └────────┬────────┘
-         │ HTTPS/REST
+         │ HTTPS/REST + SSE
          │
 ┌────────▼────────┐
 │   Hono API      │
@@ -107,6 +107,10 @@ RESTful API を採用し、以下のエンドポイントを提供：
 
 - GET /api/trade-offers/:offerId/messages - トレード提案のメッセージ取得
 - POST /api/trade-offers/:offerId/messages - メッセージ送信
+- GET /api/trade-offers/:offerId/messages/stream - SSE で新着メッセージ配信
+
+SSE は EventSource で接続し、`event: message` / `id: {messageId}` で配信する。
+EventSource のヘッダ制約があるため、認証トークンは `?token=` クエリで送る。
 
 **管理者:**
 
@@ -653,6 +657,7 @@ interface ErrorResponse {
 - JWT (JSON Web Token) を使用した認証
 - トークンの有効期限: 24 時間
 - リフレッシュトークンは実装しない（MVP）
+- SSE 接続では EventSource の制約により `?token=` を許可（HTTPS 前提）
 
 ### Authorization
 
@@ -723,4 +728,4 @@ MVP 完了後の拡張機能候補：
 4. **画像アップロード:** カードの画像を添付
 5. **高度な検索:** 複数カードの組み合わせ検索
 6. **お気に入り機能:** トレード提案のブックマーク
-7. **リアルタイムチャット:** WebSocket を使用したリアルタイム通信
+7. **双方向リアルタイム化:** 既読/入力中などを含む WebSocket 対応

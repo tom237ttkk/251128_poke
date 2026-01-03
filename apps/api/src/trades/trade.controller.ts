@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import * as tradeService from "./trade.service.js";
 import * as chatService from "../chat/chat.service.js";
+import { subscribeToTrade } from "../chat/chat.stream.js";
 import { authMiddleware } from "../middlewares/auth.js";
 import prisma from "../prisma.js";
 
@@ -174,6 +175,53 @@ app.get("/:id/messages", async (c) => {
   } catch (e: any) {
     return c.json({ error: e.message }, 403);
   }
+});
+
+app.get("/:id/messages/stream", async (c) => {
+  const user = c.get("user");
+  const id = c.req.param("id");
+
+  try {
+    await chatService.canAccessChat(id, user.id);
+  } catch (e: any) {
+    return c.json({ error: e.message }, 403);
+  }
+
+  const encoder = new TextEncoder();
+  let cleanup: (() => void) | null = null;
+
+  const stream = new ReadableStream({
+    start(controller) {
+      const send = (payload: string) => {
+        controller.enqueue(encoder.encode(payload));
+      };
+
+      cleanup = subscribeToTrade(id, {
+        send,
+        close: () => controller.close(),
+      });
+
+      send("retry: 3000\n");
+      send(": connected\n\n");
+
+      c.req.raw.signal.addEventListener("abort", () => {
+        cleanup?.();
+        controller.close();
+      });
+    },
+    cancel() {
+      cleanup?.();
+    },
+  });
+
+  return new Response(stream, {
+    headers: {
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      Connection: "keep-alive",
+      "X-Accel-Buffering": "no",
+    },
+  });
 });
 
 export default app;

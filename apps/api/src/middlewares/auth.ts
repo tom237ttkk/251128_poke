@@ -17,11 +17,15 @@ const JWT_SECRET = process.env.JWT_SECRET || "secret";
 export const authMiddleware = createMiddleware<{ Variables: Variables }>(
   async (c, next) => {
     const authHeader = c.req.header("Authorization");
-    if (!authHeader) {
-      return c.json({ error: "Unauthorized" }, 401);
+    let token = authHeader?.split(" ")[1];
+
+    if (!token) {
+      const accept = c.req.header("Accept") ?? "";
+      if (accept.includes("text/event-stream")) {
+        token = c.req.query("token");
+      }
     }
 
-    const token = authHeader.split(" ")[1];
     if (!token) {
       return c.json({ error: "Unauthorized" }, 401);
     }
