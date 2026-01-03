@@ -16,7 +16,13 @@ export class ApiClient {
           message: "An unknown error occurred",
         },
       }));
-      throw new Error(error.error?.message || "Request failed");
+      const errorMessage =
+        typeof error?.error === "string"
+          ? error.error
+          : typeof error?.message === "string"
+            ? error.message
+            : error.error?.message || "Request failed";
+      throw new Error(errorMessage);
     }
 
     if (response.status === 204) {

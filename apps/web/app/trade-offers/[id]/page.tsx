@@ -22,27 +22,65 @@ export default function TradeOfferDetailPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [messagesError, setMessagesError] = useState<{
+    message: string;
+    kind: "info" | "error";
+  } | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
+
     const loadData = async () => {
+      setIsLoading(true);
+      setError("");
+      setMessagesError(null);
+      setMessages([]);
+
       try {
-        setIsLoading(true);
-        const [offerData, messagesData] = await Promise.all([
-          TradeOfferService.getTradeOffer(offerId),
-          MessageService.getMessages(offerId),
-        ]);
+        const offerData = await TradeOfferService.getTradeOffer(offerId);
+        if (cancelled) return;
         setTradeOffer(offerData);
-        setMessages(messagesData);
+
+        try {
+          const messagesData = await MessageService.getMessages(offerId);
+          if (cancelled) return;
+          setMessages(messagesData);
+        } catch (err) {
+          if (cancelled) return;
+          const message =
+            err instanceof Error
+              ? err.message
+              : "メッセージの読み込みに失敗しました";
+          if (
+            message.includes("participant") ||
+            message.includes("Unauthorized") ||
+            message.includes("Forbidden")
+          ) {
+            setMessagesError({
+              message: "チャットは参加者のみ閲覧できます",
+              kind: "info",
+            });
+          } else {
+            setMessagesError({ message, kind: "error" });
+          }
+        }
       } catch (err) {
+        if (cancelled) return;
+        setTradeOffer(null);
         setError(
           err instanceof Error ? err.message : "データの読み込みに失敗しました"
         );
       } finally {
-        setIsLoading(false);
+        if (!cancelled) {
+          setIsLoading(false);
+        }
       }
     };
 
     loadData();
+    return () => {
+      cancelled = true;
+    };
   }, [offerId]);
 
   const handleSendMessage = async (content: string) => {
@@ -204,7 +242,21 @@ export default function TradeOfferDetailPage() {
         </div>
 
         {isAuthenticated && (
-          <ChatBox messages={messages} onSendMessage={handleSendMessage} />
+          <>
+            {messagesError ? (
+              messagesError.kind === "info" ? (
+                <div className="card card-body">
+                  <p className="text-sm text-gray-600">
+                    {messagesError.message}
+                  </p>
+                </div>
+              ) : (
+                <ErrorMessage message={messagesError.message} />
+              )
+            ) : (
+              <ChatBox messages={messages} onSendMessage={handleSendMessage} />
+            )}
+          </>
         )}
       </main>
     </div>

@@ -8,7 +8,8 @@ export const sendMessage = async (
   const trade = await prisma.tradeOffer.findUnique({ where: { id: tradeId } });
   if (!trade) throw new Error("Trade not found");
 
-  if (trade.senderId !== senderId && trade.receiverId !== senderId) {
+  const isOpenOffer = trade.senderId === trade.receiverId;
+  if (!isOpenOffer && trade.senderId !== senderId && trade.receiverId !== senderId) {
     throw new Error("You are not a participant of this trade");
   }
 
@@ -25,7 +26,8 @@ export const getMessages = async (tradeId: string, userId: string) => {
   const trade = await prisma.tradeOffer.findUnique({ where: { id: tradeId } });
   if (!trade) throw new Error("Trade not found");
 
-  if (trade.senderId !== userId && trade.receiverId !== userId) {
+  const isOpenOffer = trade.senderId === trade.receiverId;
+  if (!isOpenOffer && trade.senderId !== userId && trade.receiverId !== userId) {
     throw new Error("You are not a participant of this trade");
   }
 

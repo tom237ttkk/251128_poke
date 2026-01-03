@@ -6,6 +6,9 @@
     "dev": "bun run --hot src/index.ts",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
+    "db:seed": "bun prisma/seeds/packs.ts && bun prisma/seeds/cards.ts",
+    "db:seed:packs": "bun prisma/seeds/packs.ts",
+    "db:seed:cards": "bun prisma/seeds/cards.ts",
     "db:studio": "prisma studio",
     "test": "bun test"
   },
