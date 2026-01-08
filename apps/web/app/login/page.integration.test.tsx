@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 import LoginPage from "./page";
-import * as AuthContext from "@/lib/contexts/auth.context";
+import * as AuthContext from "@/features/auth/contexts/auth.context";
 import { useRouter } from "next/navigation";
 
 // Mock next/navigation
@@ -12,7 +12,7 @@ vi.mock("next/navigation", () => ({
 // Mock useAuth
 const mockLogin = vi.fn();
 const mockRegister = vi.fn();
-vi.mock("@/lib/contexts/auth.context", async (importOriginal) => {
+vi.mock("@/features/auth/contexts/auth.context", async (importOriginal) => {
   const actual = await importOriginal<typeof AuthContext>();
   return {
     ...actual,

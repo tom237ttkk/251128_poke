@@ -2,13 +2,13 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ChatBox } from "@/components/chat-box";
+import { ChatBox } from "@/features/chat/components/chat-box";
 import { ErrorMessage } from "@/components/error-message";
 import { Loading } from "@/components/loading";
 import { Navigation } from "@/components/navigation";
-import { useAuth } from "@/lib/contexts/auth.context";
-import { MessageService } from "@/lib/services/message.service";
-import { TradeOfferService } from "@/lib/services/trade-offer.service";
+import { useAuth } from "@/features/auth/contexts/auth.context";
+import { MessageService } from "@/features/chat/services/message.service";
+import { TradeOfferService } from "@/features/trades/services/trade-offer.service";
 import type { Message, TradeOffer } from "@/lib/types";
 
 type TradeStatusUpdate = "ACCEPTED" | "REJECTED" | "CANCELED";

@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { PackService } from "@/lib/services/pack.service";
-import { CardMasterService } from "@/lib/services/card-master.service";
+import { PackService } from "@/features/cards/services/pack.service";
+import { CardMasterService } from "@/features/cards/services/card-master.service";
 import type { Pack, Card } from "@/lib/types";
 
 interface CardSelectorProps {

@@ -1,5 +1,5 @@
-import { ApiClient } from "../utils/api";
-import type { Card } from "../types";
+import { ApiClient } from "@/lib/utils/api";
+import type { Card } from "@/lib/types";
 
 export class CardMasterService {
   static async getCardMaster(packId?: string): Promise<Card[]> {

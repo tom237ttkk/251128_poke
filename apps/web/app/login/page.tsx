@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ErrorMessage } from "@/components/error-message";
-import { useAuth } from "@/lib/contexts/auth.context";
+import { useAuth } from "@/features/auth/contexts/auth.context";
 
 export default function LoginPage() {
   const [pokepokeUserId, setPokepokeUserId] = useState("");

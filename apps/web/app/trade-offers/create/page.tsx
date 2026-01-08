@@ -5,9 +5,9 @@ import { useEffect, useState } from "react";
 import { ErrorMessage } from "@/components/error-message";
 import { Loading } from "@/components/loading";
 import { Navigation } from "@/components/navigation";
-import { useAuth } from "@/lib/contexts/auth.context";
-import { CardCollectionService } from "@/lib/services/card-collection.service";
-import { TradeOfferService } from "@/lib/services/trade-offer.service";
+import { useAuth } from "@/features/auth/contexts/auth.context";
+import { CardCollectionService } from "@/features/cards/services/card-collection.service";
+import { TradeOfferService } from "@/features/trades/services/trade-offer.service";
 import type { CardCollection } from "@/lib/types";
 
 export default function CreateTradeOfferPage() {
@@ -15,10 +15,10 @@ export default function CreateTradeOfferPage() {
   const router = useRouter();
   const [cards, setCards] = useState<CardCollection[]>([]);
   const [selectedWanted, setSelectedWanted] = useState<Map<string, number>>(
-    new Map(),
+    new Map()
   );
   const [selectedOffered, setSelectedOffered] = useState<Map<string, number>>(
-    new Map(),
+    new Map()
   );
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -39,7 +39,7 @@ export default function CreateTradeOfferPage() {
         setError(
           err instanceof Error
             ? err.message
-            : "カードコレクションの読み込みに失敗しました",
+            : "カードコレクションの読み込みに失敗しました"
         );
       } finally {
         setIsLoading(false);
@@ -79,7 +79,7 @@ export default function CreateTradeOfferPage() {
   const handleQuantityChange = (
     cardId: string,
     quantity: number,
-    type: "wanted" | "offered",
+    type: "wanted" | "offered"
   ) => {
     if (type === "wanted") {
       const newSelected = new Map(selectedWanted);
@@ -108,14 +108,14 @@ export default function CreateTradeOfferPage() {
         ([cardId, quantity]) => {
           const card = cards.find((c) => c.id === cardId);
           return { cardName: card?.cardName || "", quantity };
-        },
+        }
       );
 
       const offeredCardsData = Array.from(selectedOffered.entries()).map(
         ([cardId, quantity]) => {
           const card = cards.find((c) => c.id === cardId);
           return { cardName: card?.cardName || "", quantity };
-        },
+        }
       );
 
       await TradeOfferService.createTradeOffer({
@@ -126,7 +126,7 @@ export default function CreateTradeOfferPage() {
       router.push("/profile");
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "トレード提案の作成に失敗しました",
+        err instanceof Error ? err.message : "トレード提案の作成に失敗しました"
       );
     } finally {
       setIsSubmitting(false);
@@ -196,7 +196,7 @@ export default function CreateTradeOfferPage() {
                             handleQuantityChange(
                               card.id,
                               Number.parseInt(e.target.value, 10),
-                              "wanted",
+                              "wanted"
                             )
                           }
                           className="input w-20 py-1 text-sm"
@@ -243,7 +243,7 @@ export default function CreateTradeOfferPage() {
                             handleQuantityChange(
                               card.id,
                               Number.parseInt(e.target.value, 10),
-                              "offered",
+                              "offered"
                             )
                           }
                           className="input w-20 py-1 text-sm"

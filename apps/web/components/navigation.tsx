@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/lib/contexts/auth.context";
+import { useAuth } from "@/features/auth/contexts/auth.context";
 
 export function Navigation() {
   const { user, isAuthenticated, logout } = useAuth();

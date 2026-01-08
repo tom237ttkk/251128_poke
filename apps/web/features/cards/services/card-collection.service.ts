@@ -1,7 +1,7 @@
 // カードコレクションサービス
 
-import { ApiClient } from "../utils/api";
-import type { CardCollection } from "../types";
+import { ApiClient } from "@/lib/utils/api";
+import type { CardCollection } from "@/lib/types";
 
 interface AddCardRequest {
   cardName: string;

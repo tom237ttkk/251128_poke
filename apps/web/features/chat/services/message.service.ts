@@ -1,7 +1,7 @@
 // メッセージサービス
 
-import { ApiClient, API_BASE_URL } from "../utils/api";
-import type { Message } from "../types";
+import { ApiClient, API_BASE_URL } from "@/lib/utils/api";
+import type { Message } from "@/lib/types";
 
 export class MessageService {
   static async getMessages(
