@@ -1,7 +1,7 @@
 // 認証サービス
 
-import { ApiClient } from "../utils/api";
-import type { User } from "../types";
+import { ApiClient } from "@/lib/utils/api";
+import type { User } from "@/lib/types";
 
 interface RegisterResponse {
   user: User;

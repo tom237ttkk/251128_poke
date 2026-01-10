@@ -2,14 +2,14 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { CardList } from "@/components/card-list";
-import { CardSelector } from "@/components/card-selector";
+import { CardList } from "@/features/cards/components/card-list";
+import { CardSelector } from "@/features/cards/components/card-selector";
 import { ErrorMessage } from "@/components/error-message";
 import { Loading } from "@/components/loading";
 import { Navigation } from "@/components/navigation";
-import { useAuth } from "@/lib/contexts/auth.context";
-import { CardCollectionService } from "@/lib/services/card-collection.service";
-import { TradeOfferService } from "@/lib/services/trade-offer.service";
+import { useAuth } from "@/features/auth/contexts/auth.context";
+import { CardCollectionService } from "@/features/cards/services/card-collection.service";
+import { TradeOfferService } from "@/features/trades/services/trade-offer.service";
 import type { CardCollection, TradeOffer } from "@/lib/types";
 
 export default function ProfilePage() {

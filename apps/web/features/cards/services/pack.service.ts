@@ -1,5 +1,5 @@
-import { ApiClient } from "../utils/api";
-import type { Pack } from "../types";
+import { ApiClient } from "@/lib/utils/api";
+import type { Pack } from "@/lib/types";
 
 export class PackService {
   static async getPacks(): Promise<Pack[]> {

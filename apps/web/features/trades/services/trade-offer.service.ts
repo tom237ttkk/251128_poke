@@ -1,7 +1,7 @@
 // トレード提案サービス
 
-import { ApiClient } from "../utils/api";
-import type { TradeOffer } from "../types";
+import { ApiClient } from "@/lib/utils/api";
+import type { TradeOffer } from "@/lib/types";
 
 interface CreateTradeOfferRequest {
   wantedCards: Array<{ cardName: string; quantity: number }>;

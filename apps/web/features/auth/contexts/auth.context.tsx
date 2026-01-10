@@ -8,7 +8,7 @@ import React, {
   type ReactNode,
 } from "react";
 import { AuthService } from "../services/auth.service";
-import type { User } from "../types";
+import type { User } from "@/lib/types";
 
 interface AuthContextType {
   user: User | null;
@@ -36,7 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const currentUser = await AuthService.getCurrentUser();
           setUser(currentUser);
         } catch (error) {
-          console.error("Failed to load user:", error);
+          console.warn("Failed to load user (likely expired token):", error);
           AuthService.logout();
         }
       }

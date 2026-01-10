@@ -5,8 +5,8 @@ import { ErrorMessage } from "@/components/error-message";
 import { Loading } from "@/components/loading";
 import { Navigation } from "@/components/navigation";
 import { SearchBar } from "@/components/search-bar";
-import { TradeOfferCard } from "@/components/trade-offer-card";
-import { TradeOfferService } from "@/lib/services/trade-offer.service";
+import { TradeOfferCard } from "@/features/trades/components/trade-offer-card";
+import { TradeOfferService } from "@/features/trades/services/trade-offer.service";
 import type { TradeOffer } from "@/lib/types";
 
 export default function TradeOffersPage() {
@@ -29,13 +29,13 @@ export default function TradeOffersPage() {
         setError(
           err instanceof Error
             ? err.message
-            : "トレード提案の読み込みに失敗しました",
+            : "トレード提案の読み込みに失敗しました"
         );
       } finally {
         setIsLoading(false);
       }
     },
-    [],
+    []
   );
 
   useEffect(() => {

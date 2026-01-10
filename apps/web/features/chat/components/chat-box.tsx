@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useAuth } from "@/lib/contexts/auth.context";
+import { useAuth } from "@/features/auth/contexts/auth.context";
 import type { Message } from "@/lib/types";
 
 interface ChatBoxProps {
