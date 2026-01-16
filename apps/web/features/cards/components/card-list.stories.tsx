@@ -11,8 +11,8 @@ const sampleCards: CardCollection[] = [
     cardName: "ピカチュウ",
     cardType: "wanted",
     quantity: 1,
-    createdAt: new Date("2025-11-01"),
-    updatedAt: new Date("2025-11-01"),
+    createdAt: "2025-11-01T00:00:00+09:00",
+    updatedAt: "2025-11-01T00:00:00+09:00",
   },
   {
     id: "2",
@@ -21,8 +21,8 @@ const sampleCards: CardCollection[] = [
     cardName: "リザードン",
     cardType: "wanted",
     quantity: 2,
-    createdAt: new Date("2025-11-01"),
-    updatedAt: new Date("2025-11-01"),
+    createdAt: "2025-11-01T00:00:00+09:00",
+    updatedAt: "2025-11-01T00:00:00+09:00",
   },
   {
     id: "3",
@@ -31,8 +31,8 @@ const sampleCards: CardCollection[] = [
     cardName: "フシギダネ",
     cardType: "offered",
     quantity: 3,
-    createdAt: new Date("2025-11-01"),
-    updatedAt: new Date("2025-11-01"),
+    createdAt: "2025-11-01T00:00:00+09:00",
+    updatedAt: "2025-11-01T00:00:00+09:00",
   },
 ];
 

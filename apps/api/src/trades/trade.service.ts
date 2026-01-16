@@ -42,6 +42,7 @@ const mapTradeOffer = (trade: {
     role: string;
     isBlacklisted: boolean;
     createdAt: Date;
+    updatedAt: Date;
   } | null;
   details?: Array<{
     id: string;
@@ -58,7 +59,7 @@ const mapTradeOffer = (trade: {
   createdAt: trade.createdAt,
   updatedAt: trade.updatedAt,
   cards: trade.details ? trade.details.map(mapTradeOfferCard) : [],
-  user: trade.sender
+      user: trade.sender
     ? {
         id: trade.sender.id,
         pokePokeId: trade.sender.pokePokeId,
@@ -66,6 +67,7 @@ const mapTradeOffer = (trade: {
         role: trade.sender.role,
         isBlacklisted: trade.sender.isBlacklisted,
         createdAt: trade.sender.createdAt,
+        updatedAt: trade.sender.updatedAt,
       }
     : undefined,
 });
@@ -128,6 +130,7 @@ export const createTradeOffer = async (
           role: true,
           isBlacklisted: true,
           createdAt: true,
+          updatedAt: true,
         },
       },
       details: { include: { card: { select: { name: true } } } },
@@ -157,6 +160,7 @@ export const getTradeOffers = async (
           role: true,
           isBlacklisted: true,
           createdAt: true,
+          updatedAt: true,
         },
       },
       receiver: { select: { id: true, name: true, pokePokeId: true } },
@@ -210,6 +214,7 @@ export const searchTradeOffers = async ({
           role: true,
           isBlacklisted: true,
           createdAt: true,
+          updatedAt: true,
         },
       },
       receiver: { select: { id: true, name: true, pokePokeId: true } },
@@ -239,6 +244,7 @@ export const getTradeOfferById = async (id: string) => {
           role: true,
           isBlacklisted: true,
           createdAt: true,
+          updatedAt: true,
         },
       },
       receiver: { select: { id: true, name: true, pokePokeId: true } },

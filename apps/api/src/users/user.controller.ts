@@ -1,8 +1,13 @@
 import { Hono, type Context } from "hono";
+import {
+  collectionUpdateSchema,
+  quantityUpdateSchema,
+} from "@pokepoke/shared";
 import * as userService from "./user.service.js";
 import * as cardService from "../cards/card.service.js";
 import { authMiddleware } from "../middlewares/auth.js";
 import * as tradeService from "../trades/trade.service.js";
+import { parseJson, validationError } from "../utils/validation.js";
 
 type Variables = {
   user: {
@@ -27,17 +32,17 @@ const addCardToCollection = async (
   cardType: "wanted" | "offered"
 ) => {
   const user = c.get("user");
-  const { cardId, quantity } = await c.req.json();
-  const parsedQuantity = Number(quantity);
-  if (!cardId || !Number.isFinite(parsedQuantity) || parsedQuantity <= 0) {
-    return c.json({ error: "Invalid cardId or quantity" }, 400);
+  const parsed = await parseJson(c, collectionUpdateSchema);
+  if (!parsed.success) {
+    return c.json({ error: validationError(parsed.error.flatten()) }, 400);
   }
+  const { cardId, quantity } = parsed.data;
 
   try {
     const item = await cardService.updateCollection(
       user.id,
       cardId,
-      parsedQuantity,
+      quantity,
       cardType
     );
     return c.json(item, 201);
@@ -52,16 +57,15 @@ app.post("/me/cards/offered", (c) => addCardToCollection(c, "offered"));
 app.put("/me/cards/:id", async (c) => {
   const user = c.get("user");
   const id = c.req.param("id");
-  const { quantity } = await c.req.json();
-  const parsedQuantity = Number(quantity);
-  if (!Number.isFinite(parsedQuantity) || parsedQuantity <= 0) {
-    return c.json({ error: "Invalid quantity" }, 400);
+  const parsed = await parseJson(c, quantityUpdateSchema);
+  if (!parsed.success) {
+    return c.json({ error: validationError(parsed.error.flatten()) }, 400);
   }
   try {
     const item = await cardService.updateCollectionItemQuantity(
       user.id,
       id,
-      parsedQuantity
+      parsed.data.quantity
     );
     return c.json(item);
   } catch (e: any) {

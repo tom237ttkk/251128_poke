@@ -48,6 +48,9 @@ export const register = async (
       pokePokeId: user.pokePokeId,
       name: user.name,
       role: user.role,
+      isBlacklisted: user.isBlacklisted,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
     },
   };
 };
@@ -78,6 +81,9 @@ export const login = async (pokePokeId: string, password: string) => {
       pokePokeId: user.pokePokeId,
       name: user.name,
       role: user.role,
+      isBlacklisted: user.isBlacklisted,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
     },
   };
 };
@@ -95,5 +101,6 @@ export const me = async (userId: string) => {
     role: user.role,
     isBlacklisted: user.isBlacklisted,
     createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
   };
 };
