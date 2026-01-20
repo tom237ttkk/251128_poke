@@ -30,7 +30,17 @@ export const sendMessage = async (
       content,
     },
     include: {
-      sender: { select: { id: true, name: true, pokePokeId: true } },
+      sender: {
+        select: {
+          id: true,
+          name: true,
+          pokePokeId: true,
+          role: true,
+          isBlacklisted: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      },
     },
   });
 
@@ -46,7 +56,17 @@ export const getMessages = async (tradeId: string, userId: string) => {
     where: { tradeOfferId: tradeId },
     orderBy: { createdAt: "asc" },
     include: {
-      sender: { select: { id: true, name: true, pokePokeId: true } },
+      sender: {
+        select: {
+          id: true,
+          name: true,
+          pokePokeId: true,
+          role: true,
+          isBlacklisted: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      },
     },
   });
 };

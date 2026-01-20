@@ -1,6 +1,11 @@
 import { Hono } from "hono";
+import {
+  loginRequestSchema,
+  registerRequestSchema,
+} from "@pokepoke/shared";
 import * as authService from "./auth.service.js";
 import { authMiddleware } from "../middlewares/auth.js";
+import { parseJson, validationError } from "../utils/validation.js";
 
 const app = new Hono<{
   Variables: {
@@ -14,10 +19,11 @@ const app = new Hono<{
 
 app.post("/register", async (c) => {
   try {
-    const { pokePokeId, name, password } = await c.req.json();
-    if (!pokePokeId || !name || !password) {
-      return c.json({ error: "Missing required fields" }, 400);
+    const parsed = await parseJson(c, registerRequestSchema);
+    if (!parsed.success) {
+      return c.json({ error: validationError(parsed.error.flatten()) }, 400);
     }
+    const { pokePokeId, name, password } = parsed.data;
     const result = await authService.register(pokePokeId, name, password);
     return c.json(result, 201);
   } catch (e: any) {
@@ -27,10 +33,11 @@ app.post("/register", async (c) => {
 
 app.post("/login", async (c) => {
   try {
-    const { pokePokeId, password } = await c.req.json();
-    if (!pokePokeId || !password) {
-      return c.json({ error: "Missing credentials" }, 400);
+    const parsed = await parseJson(c, loginRequestSchema);
+    if (!parsed.success) {
+      return c.json({ error: validationError(parsed.error.flatten()) }, 400);
     }
+    const { pokePokeId, password } = parsed.data;
     const result = await authService.login(pokePokeId, password);
     return c.json(result);
   } catch (e: any) {

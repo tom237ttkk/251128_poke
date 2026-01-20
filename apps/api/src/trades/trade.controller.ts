@@ -1,9 +1,15 @@
 import { Hono } from "hono";
+import {
+  messageSendSchema,
+  tradeOfferCreateSchema,
+  tradeOfferStatusUpdateSchema,
+} from "@pokepoke/shared";
 import * as tradeService from "./trade.service.js";
 import * as chatService from "../chat/chat.service.js";
 import { subscribeToTrade } from "../chat/chat.stream.js";
 import { authMiddleware } from "../middlewares/auth.js";
 import prisma from "../prisma.js";
+import { parseJson, validationError } from "../utils/validation.js";
 
 type Variables = {
   user: {
@@ -27,9 +33,6 @@ type TradeItemInput = {
   type: "WANTED" | "GIVEN";
   quantity: number;
 };
-
-const isValidQuantity = (quantity: unknown) =>
-  Number.isFinite(Number(quantity)) && Number(quantity) > 0;
 
 const buildItemsFromCardNames = async (
   wantedCards: NamedCardInput[],
@@ -66,34 +69,22 @@ const buildItemsFromCardNames = async (
 
 app.post("/", async (c) => {
   const user = c.get("user");
-  const { receiverId, items, wantedCards, offeredCards } = await c.req.json();
   let tradeItems: TradeItemInput[] | null = null;
 
-  if (Array.isArray(items)) {
-    const normalizedItems = items
-      .map((item: any) => ({
-        cardId: item?.cardId,
-        type: item?.type,
-        quantity: Number(item?.quantity),
-      }))
-      .filter(
-        (item: TradeItemInput) =>
-          typeof item.cardId === "string" &&
-          (item.type === "WANTED" || item.type === "GIVEN") &&
-          isValidQuantity(item.quantity)
-      );
-    tradeItems = normalizedItems.length > 0 ? normalizedItems : null;
-  } else if (Array.isArray(wantedCards) && Array.isArray(offeredCards)) {
-    const wanted = wantedCards.filter(
-      (card: any) =>
-        typeof card?.cardName === "string" && isValidQuantity(card?.quantity)
-    );
-    const offered = offeredCards.filter(
-      (card: any) =>
-        typeof card?.cardName === "string" && isValidQuantity(card?.quantity)
-    );
+  const parsed = await parseJson(c, tradeOfferCreateSchema);
+  if (!parsed.success) {
+    return c.json({ error: validationError(parsed.error.flatten()) }, 400);
+  }
+
+  const payload = parsed.data;
+  if ("items" in payload) {
+    tradeItems = payload.items;
+  } else {
     try {
-      tradeItems = await buildItemsFromCardNames(wanted, offered);
+      tradeItems = await buildItemsFromCardNames(
+        payload.wantedCards,
+        payload.offeredCards
+      );
     } catch (e: any) {
       return c.json({ error: e.message }, 400);
     }
@@ -106,7 +97,7 @@ app.post("/", async (c) => {
   try {
     const trade = await tradeService.createTradeOffer(
       user.id,
-      receiverId,
+      payload.receiverId,
       tradeItems
     );
     return c.json(trade, 201);
@@ -144,7 +135,11 @@ app.get("/:id", async (c) => {
 app.patch("/:id/status", async (c) => {
   const user = c.get("user");
   const id = c.req.param("id");
-  const { status } = await c.req.json();
+  const parsed = await parseJson(c, tradeOfferStatusUpdateSchema);
+  if (!parsed.success) {
+    return c.json({ error: validationError(parsed.error.flatten()) }, 400);
+  }
+  const { status } = parsed.data;
   try {
     const updated = await tradeService.updateTradeStatus(id, user.id, status);
     return c.json(updated);
@@ -156,8 +151,11 @@ app.patch("/:id/status", async (c) => {
 app.post("/:id/messages", async (c) => {
   const user = c.get("user");
   const id = c.req.param("id");
-  const { content } = await c.req.json();
-  if (!content) return c.json({ error: "Message content required" }, 400);
+  const parsed = await parseJson(c, messageSendSchema);
+  if (!parsed.success) {
+    return c.json({ error: validationError(parsed.error.flatten()) }, 400);
+  }
+  const { content } = parsed.data;
   try {
     const message = await chatService.sendMessage(id, user.id, content);
     return c.json(message, 201);

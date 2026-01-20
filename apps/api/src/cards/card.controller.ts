@@ -1,7 +1,9 @@
 import { Hono } from "hono";
+import { collectionUpdateSchema } from "@pokepoke/shared";
 import * as cardService from "./card.service.js";
 import * as cardMasterService from "./card-master.service.js";
 import { authMiddleware } from "../middlewares/auth.js";
+import { parseJson, validationError } from "../utils/validation.js";
 
 type Variables = {
   user: {
@@ -30,16 +32,16 @@ app.get("/", async (c) => {
 
 app.put("/", async (c) => {
   const user = c.get("user");
-  const { cardId, quantity, cardType } = await c.req.json();
-  const parsedQuantity = Number(quantity);
-  if (!cardId || !Number.isFinite(parsedQuantity) || parsedQuantity <= 0) {
-    return c.json({ error: "Missing cardId or invalid quantity" }, 400);
+  const parsed = await parseJson(c, collectionUpdateSchema);
+  if (!parsed.success) {
+    return c.json({ error: validationError(parsed.error.flatten()) }, 400);
   }
+  const { cardId, quantity, cardType } = parsed.data;
   try {
     const item = await cardService.updateCollection(
       user.id,
       cardId,
-      parsedQuantity,
+      quantity,
       cardType
     );
     return c.json(item);
