@@ -1,12 +1,12 @@
 ---
 name: verification-loop
-description: "A comprehensive verification system for Claude Code sessions."
+description: "A comprehensive verification system for Codex work sessions."
 origin: ECC
 ---
 
 # Verification Loop Skill
 
-A comprehensive verification system for Claude Code sessions.
+A comprehensive verification system for Codex work sessions.
 
 ## When to Use
 
@@ -20,10 +20,10 @@ Invoke this skill:
 
 ### Phase 1: Build Verification
 ```bash
-# Check if project builds
-npm run build 2>&1 | tail -20
+# Check if the project builds
+npm run build
 # OR
-pnpm build 2>&1 | tail -20
+pnpm build
 ```
 
 If build fails, STOP and fix before continuing.
@@ -31,10 +31,10 @@ If build fails, STOP and fix before continuing.
 ### Phase 2: Type Check
 ```bash
 # TypeScript projects
-npx tsc --noEmit 2>&1 | head -30
+npx tsc --noEmit
 
 # Python projects
-pyright . 2>&1 | head -30
+pyright .
 ```
 
 Report all type errors. Fix critical ones before continuing.
@@ -42,16 +42,16 @@ Report all type errors. Fix critical ones before continuing.
 ### Phase 3: Lint Check
 ```bash
 # JavaScript/TypeScript
-npm run lint 2>&1 | head -30
+npm run lint
 
 # Python
-ruff check . 2>&1 | head -30
+ruff check .
 ```
 
 ### Phase 4: Test Suite
 ```bash
 # Run tests with coverage
-npm run test -- --coverage 2>&1 | tail -50
+npm run test -- --coverage
 
 # Check coverage threshold
 # Target: 80% minimum
@@ -66,18 +66,18 @@ Report:
 ### Phase 5: Security Scan
 ```bash
 # Check for secrets
-grep -rn "sk-" --include="*.ts" --include="*.js" . 2>/dev/null | head -10
-grep -rn "api_key" --include="*.ts" --include="*.js" . 2>/dev/null | head -10
+rg -n "sk-" -g "*.ts" -g "*.js" .
+rg -n "api_key" -g "*.ts" -g "*.js" .
 
 # Check for console.log
-grep -rn "console.log" --include="*.ts" --include="*.tsx" src/ 2>/dev/null | head -10
+rg -n "console\\.log" -g "*.ts" -g "*.tsx" src
 ```
 
 ### Phase 6: Diff Review
 ```bash
 # Show what changed
 git diff --stat
-git diff HEAD~1 --name-only
+git diff --name-only HEAD~1 HEAD
 ```
 
 Review each changed file for:
@@ -115,12 +115,12 @@ For long sessions, run verification every 15 minutes or after major changes:
 Set a mental checkpoint:
 - After completing each function
 - After finishing a component
-- Before moving to next task
+- Before moving to the next task
 
-Run: /verify
+Re-run the checklist from Phase 1 to Phase 6.
 ```
 
 ## Integration with Hooks
 
-This skill complements PostToolUse hooks but provides deeper verification.
-Hooks catch issues immediately; this skill provides comprehensive review.
+This skill complements lightweight automated checks but provides deeper verification.
+Automated checks catch issues quickly; this skill provides a comprehensive review pass.

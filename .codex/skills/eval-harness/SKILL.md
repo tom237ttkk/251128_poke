@@ -1,18 +1,18 @@
 ---
 name: eval-harness
-description: Formal evaluation framework for Claude Code sessions implementing eval-driven development (EDD) principles
+description: Formal evaluation framework for Codex-assisted development implementing eval-driven development (EDD) principles
 origin: ECC
 tools: Read, Write, Edit, Bash, Grep, Glob
 ---
 
 # Eval Harness Skill
 
-A formal evaluation framework for Claude Code sessions, implementing eval-driven development (EDD) principles.
+A formal evaluation framework for Codex-assisted development, implementing eval-driven development (EDD) principles.
 
 ## When to Activate
 
 - Setting up eval-driven development (EDD) for AI-assisted workflows
-- Defining pass/fail criteria for Claude Code task completion
+- Defining pass/fail criteria for Codex-assisted task completion
 - Measuring agent reliability with pass@k metrics
 - Creating regression test suites for prompt or agent changes
 - Benchmarking agent performance across model versions
@@ -28,10 +28,10 @@ Eval-Driven Development treats evals as the "unit tests of AI development":
 ## Eval Types
 
 ### Capability Evals
-Test if Claude can do something it couldn't before:
+Test if the implementation can do something it couldn't before:
 ```markdown
 [CAPABILITY EVAL: feature-name]
-Task: Description of what Claude should accomplish
+Task: Description of what the feature should accomplish
 Success Criteria:
   - [ ] Criterion 1
   - [ ] Criterion 2
@@ -67,7 +67,7 @@ npm run build && echo "PASS" || echo "FAIL"
 ```
 
 ### 2. Model-Based Grader
-Use Claude to evaluate open-ended outputs:
+Use a model-based rubric to evaluate open-ended outputs:
 ```markdown
 [MODEL GRADER PROMPT]
 Evaluate the following code change:
@@ -165,28 +165,28 @@ Status: READY FOR REVIEW
 ## Integration Patterns
 
 ### Pre-Implementation
+```text
+Create .codex/evals/feature-name.md
 ```
-/eval define feature-name
-```
-Creates eval definition file at `.claude/evals/feature-name.md`
+Define capability evals, regression evals, and success thresholds before coding.
 
 ### During Implementation
+```text
+Run the eval commands defined in .codex/evals/feature-name.md
 ```
-/eval check feature-name
-```
-Runs current evals and reports status
+Append results and notes to `.codex/evals/feature-name.log`.
 
 ### Post-Implementation
+```text
+Summarize the final eval results for feature-name
 ```
-/eval report feature-name
-```
-Generates full eval report
+Store the summary alongside the eval artifacts or in release notes.
 
 ## Eval Storage
 
-Store evals in project:
+Store evals in the project:
 ```
-.claude/
+.codex/
   evals/
     feature-xyz.md      # Eval definition
     feature-xyz.log     # Eval run history
@@ -225,7 +225,7 @@ Regression Evals:
 [Write code]
 
 ### Phase 3: Evaluate
-Run: /eval check add-authentication
+Run the defined capability and regression evals, then record the results.
 
 ### Phase 4: Report
 EVAL REPORT: add-authentication
@@ -265,6 +265,6 @@ Recommended thresholds:
 
 ### Minimal Eval Artifact Layout
 
-- `.claude/evals/<feature>.md` definition
-- `.claude/evals/<feature>.log` run history
+- `.codex/evals/<feature>.md` definition
+- `.codex/evals/<feature>.log` run history
 - `docs/releases/<version>/eval-summary.md` release snapshot
