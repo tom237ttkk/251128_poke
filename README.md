@@ -28,3 +28,11 @@
 - 設計: `.kiro/specs/pokepoke-trade-platform/design.md`
 - タスク・実装順序: `.kiro/specs/pokepoke-trade-platform/tasks.md`
 - プロダクト/技術方針: `.kiro/steering/`
+
+## ローカル補助
+
+Redis をローカルで起動する場合は、リポジトリ直下の `docker-compose.yml` を使えます。
+
+```bash
+docker compose up -d redis
+```
