@@ -6,8 +6,11 @@ import packController from "./packs/pack.controller.js";
 import cardController from "./cards/card.controller.js";
 import tradeController from "./trades/trade.controller.js";
 import searchController from "./search/search.controller.js";
+import { initializeTradeMessageBackplane } from "./chat/chat.stream.js";
 
 const app = new Hono();
+
+void initializeTradeMessageBackplane();
 
 app.use(
   "/*",

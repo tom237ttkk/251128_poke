@@ -99,7 +99,11 @@ DATABASE_URL=postgresql://...
 JWT_SECRET=...
 PORT=3000
 NODE_ENV=development
+REDIS_URL=redis://localhost:6379
+REDIS_CHANNEL=trade:messages
 ```
+
+`REDIS_URL` は任意。設定すると SSE の新着メッセージ配信が Redis pub/sub 経由でも中継され、複数 API インスタンス構成でも配信できる。`REDIS_CHANNEL` は省略時 `trade:messages`。
 
 ## プロパティベーステスト規則
 
